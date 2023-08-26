@@ -1,0 +1,50 @@
+{
+  "$schema": "https://raw.githubusercontent.com/neutralinojs/neutralinojs/main/schemas/neutralino.config.schema.json",
+  "applicationId": "com.mogita.osmflux",
+  "version": "$CI_RELEASE_VERSION",
+  "defaultMode": "window",
+  "port": 0,
+  "documentRoot": "/gui/build/",
+  "url": "/",
+  "enableServer": true,
+  "enableNativeAPI": true,
+  "exportAuthInfo": true,
+  "tokenSecurity": "one-time",
+  "logging": {
+    "enabled": true,
+    "writeToLogFile": false
+  },
+  "nativeAllowList": ["filesystem.*", "app.*", "os.*", "computer.*", "storage.*", "debug.log"],
+  "modes": {
+    "window": {
+      "title": "OsmFlux",
+      "width": 1000,
+      "height": 720,
+      "minWidth": 1000,
+      "minHeight": 720,
+      "fullScreen": false,
+      "alwaysOnTop": false,
+      "icon": "/gui/public/512x512@2x.png",
+      "enableInspector": false,
+      "borderless": false,
+      "maximize": false,
+      "hidden": false,
+      "resizable": false,
+      "exitProcessOnClose": true
+    },
+    "browser": {
+      "nativeBlockList": ["filesystem.*"]
+    }
+  },
+  "cli": {
+    "binaryName": "osmflux",
+    "resourcesPath": "/gui/build/",
+    "extensionsPath": "/extensions/",
+    "binaryVersion": "4.13.0",
+    "clientVersion": "3.11.0",
+    "frontendLibrary": {
+      "patchFile": "/gui/index.html",
+      "devUrl": "http://localhost:3000"
+    }
+  }
+}
