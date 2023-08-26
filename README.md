@@ -32,6 +32,13 @@ yarn
 yarn dev
 ```
 
+# Credit
+
+This project contains pre-compiled binaries from the following projects:
+
+- [glancet](https://gitlab.com/mogita/glancet)
+- [osmfilter](https://gitlab.com/osm-c-tools/osmctools)
+
 # License
 
 This project is licensed under the terms of the [MIT license](LICENSE).
