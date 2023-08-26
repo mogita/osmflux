@@ -10,7 +10,7 @@
     "build": "yarn build:vite && yarn build:neu",
     "build:vite": "vite build",
     "build:neu": "neu build",
-    "release": "node build-packages.js",
+    "release": "node build-release.js",
     "postinstall": "neu update"
   },
   "dependencies": {

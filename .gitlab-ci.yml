@@ -1,7 +1,14 @@
 stages:
   - build
-  # - upload
-  # - release
+  - upload
+  - release
+
+variables:
+  PACKAGE_REGISTRY_URL: '${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/osmflux/${CI_COMMIT_TAG}'
+
+before_script:
+  - |
+    sed -i "s/\$CI_RELEASE_VERSION/$CI_COMMIT_TAG/" ${CI_PROJECT_DIR}/neutralino.config.json
 
 build:
   stage: build
@@ -16,10 +23,31 @@ build:
     name: '$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-$CI_JOB_NAME'
     paths:
       - dist/
-# upload:
-#   stage: upload
-#   image: curlimages/curl:latest
-#   only:
-#     - tags
-#   script:
-#     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/quack-${CI_COMMIT_TAG} ${PACKAGE_REGISTRY_URL}/-${CI_COMMIT_TAG}'
+
+upload:
+  stage: upload
+  image: curlimages/curl:latest
+  only:
+    - tags
+  script:
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/archives/osmflux-darwin-arm64.app.zip ${PACKAGE_REGISTRY_URL}/osmflux-darwin-arm64.app.zip'
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/archives/osmflux-darwin-x64.app.zip ${PACKAGE_REGISTRY_URL}/osmflux-darwin-x64.app.zip'
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/archives/osmflux-linux-arm64.zip ${PACKAGE_REGISTRY_URL}/osmflux-linux-arm64.zip'
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/archives/osmflux-linux-x64.zip ${PACKAGE_REGISTRY_URL}/osmflux-linux-x64.zip'
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/osmflux/resources.neu ${PACKAGE_REGISTRY_URL}/resources.neu'
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/update_manifest.json ${PACKAGE_REGISTRY_URL}/update_manifest.json'
+
+release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  only:
+    - tags
+  script:
+    - |
+      release-cli create --name "$CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
+        --assets-link "{\"name\":\"osmflux-darwin-arm64.app.zip\", \"url\":\"${PACKAGE_REGISTRY_URL}/osmflux-darwin-arm64.app.zip\"}" \
+        --assets-link "{\"name\":\"osmflux-darwin-x64.app.zip\", \"url\":\"${PACKAGE_REGISTRY_URL}/osmflux-darwin-x64.app.zip\"}" \
+        --assets-link "{\"name\":\"osmflux-linux-arm64.zip\", \"url\":\"${PACKAGE_REGISTRY_URL}/osmflux-linux-arm64.zip\"}" \
+        --assets-link "{\"name\":\"osmflux-linux-x64.zip\", \"url\":\"${PACKAGE_REGISTRY_URL}/osmflux-linux-x64.zip\"}" \
+        --assets-link "{\"name\":\"resources.neu\", \"url\":\"${PACKAGE_REGISTRY_URL}/resources.neu\"}" \
+        --assets-link "{\"name\":\"update_manifest.json\", \"url\":\"${PACKAGE_REGISTRY_URL}/update_manifest.json\"}"

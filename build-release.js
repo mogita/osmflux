@@ -14,6 +14,8 @@ const getPath = (...parts) => {
 
 const config = fs.readJsonSync(getPath('neutralino.config.json'))
 const appName = config.cli.binaryName
+const applicationId = config.applicationId
+const appVersion = config.version
 
 const fixIndexHtml = async () => {
   const options = {
@@ -254,6 +256,17 @@ const createZipArchives = async () => {
   console.log(`[archives] archiving completed`)
 }
 
+const generateUpdateManifest = async () => {
+  const manifest = {
+    applicationId: applicationId,
+    version: appVersion,
+    resourcesURL: '',
+    data: {},
+  }
+
+  fs.writeFileSync(getPath('dist', 'update_manifest.json'), JSON.stringify(manifest))
+}
+
 const catchAndExit = (err) => {
   console.error(err)
   process.exit(1)
@@ -264,4 +277,5 @@ fixIndexHtml()
   .then(buildLinuxPackage)
   .then(buildMacOSPackage)
   .then(createZipArchives)
+  .then(generateUpdateManifest)
   .catch(catchAndExit)
