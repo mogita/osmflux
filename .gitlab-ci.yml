@@ -63,7 +63,7 @@ release-s3:
     - mkdir -p ~/.aws
     - cp $CI_AWS_CONFIG ~/.aws/config
     - cp $CI_AWS_CREDENTIALS ~/.aws/credentials
-    - aws s3 cp --recursive dist/archives/ s3://$CI_S3_BUCKET/osmflux/releases/stable/$CI_COMMIT_TAG/
-    - aws s3 cp --recursive dist/archives/ s3://$CI_S3_BUCKET/osmflux/releases/stable/latest/
-    - aws s3 cp dist/update_manifest.json s3://$CI_S3_BUCKET/osmflux/releases/stable/latest/
-    - aws s3 cp dist/resources.neu s3://$CI_S3_BUCKET/osmflux/releases/stable/latest/
+    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp --recursive dist/archives/ s3://$CI_S3_BUCKET/osmflux/releases/stable/$CI_COMMIT_TAG/
+    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp --recursive dist/archives/ s3://$CI_S3_BUCKET/osmflux/releases/stable/latest/
+    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp dist/update_manifest.json s3://$CI_S3_BUCKET/osmflux/releases/stable/latest/
+    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp dist/resources.neu s3://$CI_S3_BUCKET/osmflux/releases/stable/latest/
