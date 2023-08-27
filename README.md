@@ -10,7 +10,7 @@ OsmFlux provides a graphical interface for a curated range of OSM tools to help 
   - Linux (unzip and run the `osmflux` binary)
     - [Linux x64](https://static.mogita.com/osmflux/releases/stable/latest/osmflux-linux-x64.zip)
     - [Linux arm64](https://static.mogita.com/osmflux/releases/stable/latest/osmflux-linux-arm64.zip)
-  - macOS (currently not signed, you might need to allow it from Gatekeeper, here's how)
+  - macOS (currently not signed, you might need to allow it from Gatekeeper, [here's how](macOS-how-to.md))
     - [macOS x64](https://static.mogita.com/osmflux/releases/stable/latest/osmflux-darwin-x64.app.zip)
     - [macOS arm64](https://static.mogita.com/osmflux/releases/stable/latest/osmflux-darwin-arm64.app.zip)
 - [All releases](/-/releases)
