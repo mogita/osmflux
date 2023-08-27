@@ -2,7 +2,7 @@
 
 OsmFlux provides a graphical interface for a curated range of OSM tools to help working on the map data, format conversion, calculations and more.
 
-> Currently at pre-alpha stage, things might not be thoroughly tested. In case of breaking functions please [file an issue](https://gitlab.com/mogita/osmflux/-/issues/new), thank you.
+> Currently at pre-alpha stage, things might not be thoroughly tested. In case you spot any broken part please [file an issue](https://gitlab.com/mogita/osmflux/-/issues/new), thank you.
 
 # Downloads
 
@@ -13,6 +13,8 @@ OsmFlux provides a graphical interface for a curated range of OSM tools to help 
   - macOS (currently not signed, you might need to allow it from Gatekeeper, [here's how](macOS-how-to.md))
     - [macOS x64](https://static.mogita.com/osmflux/releases/stable/latest/osmflux-darwin-x64.app.zip)
     - [macOS arm64](https://static.mogita.com/osmflux/releases/stable/latest/osmflux-darwin-arm64.app.zip)
+  - Windows
+    - [Windows x64](https://static.mogita.com/osmflux/releases/stable/latest/osmflux-windows-x64.zip)
 - [All releases](https://gitlab.com/mogita/osmflux/-/releases)
 
 # Screenshot
@@ -28,8 +30,9 @@ OsmFlux provides a graphical interface for a curated range of OSM tools to help 
 
 # Supported Platforms
 
-- macOS
 - Linux
+- macOS
+- Windows
 
 # Development
 

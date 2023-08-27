@@ -36,6 +36,7 @@ upload:
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/archives/osmflux-darwin-x64.app.zip ${PACKAGE_REGISTRY_URL}/osmflux-darwin-x64.app.zip'
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/archives/osmflux-linux-arm64.zip ${PACKAGE_REGISTRY_URL}/osmflux-linux-arm64.zip'
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/archives/osmflux-linux-x64.zip ${PACKAGE_REGISTRY_URL}/osmflux-linux-x64.zip'
+    - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/archives/osmflux-windows-x64.zip ${PACKAGE_REGISTRY_URL}/osmflux-windows-x64.zip'
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/osmflux/resources.neu ${PACKAGE_REGISTRY_URL}/resources.neu'
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/update_manifest.json ${PACKAGE_REGISTRY_URL}/update_manifest.json'
 
@@ -51,6 +52,7 @@ release-gitlab:
         --assets-link "{\"name\":\"osmflux-darwin-x64.app.zip\", \"url\":\"${PACKAGE_REGISTRY_URL}/osmflux-darwin-x64.app.zip\", \"link_type\": \"package\"}" \
         --assets-link "{\"name\":\"osmflux-linux-arm64.zip\", \"url\":\"${PACKAGE_REGISTRY_URL}/osmflux-linux-arm64.zip\", \"link_type\": \"package\"}" \
         --assets-link "{\"name\":\"osmflux-linux-x64.zip\", \"url\":\"${PACKAGE_REGISTRY_URL}/osmflux-linux-x64.zip\", \"link_type\": \"package\"}" \
+        --assets-link "{\"name\":\"osmflux-windows-x64.zip\", \"url\":\"${PACKAGE_REGISTRY_URL}/osmflux-windows-x64.zip\", \"link_type\": \"package\"}" \
         --assets-link "{\"name\":\"resources.neu\", \"url\":\"${PACKAGE_REGISTRY_URL}/resources.neu\"}" \
         --assets-link "{\"name\":\"update_manifest.json\", \"url\":\"${PACKAGE_REGISTRY_URL}/update_manifest.json\"}"
 

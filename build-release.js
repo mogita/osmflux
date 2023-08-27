@@ -93,7 +93,42 @@ const buildLinuxPackage = async () => {
   console.log('[linux] packaging completed')
 }
 
-// TODO: add x64
+const buildWindowsPackage = async () => {
+  console.log('[windows] building windows packages...')
+  const binaryNameX64 = `${appName}-win_x64.exe`
+
+  // remove old app package
+  console.log('[windows] removing old packages...')
+  rimrafSync(getPath('dist', 'packages', 'windows'))
+
+  // create new app package structure
+  fs.mkdirpSync(getPath('dist', 'packages', 'windows', `${appName}-x64`))
+  fs.mkdirpSync(getPath('dist', 'packages', 'windows', `${appName}-x64`, 'commands'))
+
+  // copy the binary to app package
+  console.log('[windows] copying binary and resources...')
+  fs.copySync(
+    getPath('dist', appName, binaryNameX64),
+    getPath('dist', 'packages', 'windows', `${appName}-x64`, `${appName}.exe`),
+  )
+
+  // copy resources.neu to app package
+  fs.copySync(
+    getPath('dist', appName, 'resources.neu'),
+    getPath('dist', 'packages', 'windows', `${appName}-x64`, 'resources.neu'),
+  )
+
+  // copy commands into the app package
+  for (const cmd in commands) {
+    fs.copySync(
+      getPath('commands', cmd, 'windows nt', 'x64', `${cmd}.exe`),
+      getPath('dist', 'packages', 'windows', `${appName}-x64`, 'commands', `${cmd}.exe`),
+    )
+  }
+
+  console.log('[windows] packaging completed')
+}
+
 const buildMacOSPackage = async () => {
   console.log('[darwin] building darwin packages...')
   const icns = new IconIcns()
@@ -236,6 +271,7 @@ const createZipArchives = async () => {
     ['darwin', 'arm64.app', `${appName}.app`],
     ['linux', 'x64', false],
     ['linux', 'arm64', false],
+    ['windows', 'x64', false],
   ]
 
   for (const [platform, architecture, destPath] of targets) {
@@ -276,6 +312,7 @@ fixIndexHtml()
   .then(buildBaseApp)
   .then(buildLinuxPackage)
   .then(buildMacOSPackage)
+  .then(buildWindowsPackage)
   .then(createZipArchives)
   .then(generateUpdateManifest)
   .catch(catchAndExit)
