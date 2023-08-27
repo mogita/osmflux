@@ -13,7 +13,7 @@ OsmFlux provides a graphical interface for a curated range of OSM tools to help 
   - macOS (currently not signed, you might need to allow it from Gatekeeper, [here's how](macOS-how-to.md))
     - [macOS x64](https://static.mogita.com/osmflux/releases/stable/latest/osmflux-darwin-x64.app.zip)
     - [macOS arm64](https://static.mogita.com/osmflux/releases/stable/latest/osmflux-darwin-arm64.app.zip)
-- [All releases](/-/releases)
+- [All releases](https://gitlab.com/mogita/osmflux/-/releases)
 
 # Screenshot
 
