@@ -1,7 +1,8 @@
 stages:
   - build
   - upload
-  - release
+  - release-gitlab
+  - release-s3
 
 variables:
   PACKAGE_REGISTRY_URL: '${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/osmflux/${CI_COMMIT_TAG}'
@@ -16,6 +17,7 @@ build:
   only:
     - tags
   script:
+    # - script to zip the source code and later put into dist for src backup
     - npm i -g @neutralinojs/neu
     - yarn
     - yarn release
@@ -37,8 +39,8 @@ upload:
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/osmflux/resources.neu ${PACKAGE_REGISTRY_URL}/resources.neu'
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/update_manifest.json ${PACKAGE_REGISTRY_URL}/update_manifest.json'
 
-release:
-  stage: release
+release-gitlab:
+  stage: release-gitlab
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   only:
     - tags
@@ -51,3 +53,17 @@ release:
         --assets-link "{\"name\":\"osmflux-linux-x64.zip\", \"url\":\"${PACKAGE_REGISTRY_URL}/osmflux-linux-x64.zip\", \"link_type\": \"package\"}" \
         --assets-link "{\"name\":\"resources.neu\", \"url\":\"${PACKAGE_REGISTRY_URL}/resources.neu\"}" \
         --assets-link "{\"name\":\"update_manifest.json\", \"url\":\"${PACKAGE_REGISTRY_URL}/update_manifest.json\"}"
+
+release-s3:
+  stage: release-s3
+  image: amazon/aws-cli:latest
+  only:
+    - tags
+  script:
+    - mkdir -p ~/.aws
+    - cp $CI_AWS_CONFIG ~/.aws/config
+    - cp $CI_AWS_CREDENTIALS ~/.aws/credentials
+    - aws s3 cp -r dist/archives/ s3://$CI_S3_BUCKET/osmflux/releases/stable/$CI_COMMIT_TAG/
+    - aws s3 cp -r dist/archives/ s3://$CI_S3_BUCKET/osmflux/releases/stable/latest/
+    - aws s3 cp dist/update_manifest.json s3://$CI_S3_BUCKET/osmflux/releases/stable/latest/
+    - aws s3 cp dist/resources.neu s3://$CI_S3_BUCKET/osmflux/releases/stable/latest/
