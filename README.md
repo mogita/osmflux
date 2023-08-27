@@ -2,7 +2,7 @@
 
 OsmFlux provides a graphical interface for a curated range of OSM tools to help working on the map data, format conversion, calculations and more.
 
-> Currently at pre-alpha stage.
+> Currently at pre-alpha stage, things might not be thoroughly tested. In case of breaking functions please [file an issue](https://gitlab.com/mogita/osmflux/-/issues/new), thank you.
 
 # Downloads
 
