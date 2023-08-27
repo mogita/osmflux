@@ -260,7 +260,7 @@ const generateUpdateManifest = async () => {
   const manifest = {
     applicationId: applicationId,
     version: appVersion,
-    resourcesURL: '',
+    resourcesURL: 'https://static.mogita.com/osmflux/releases/stable/latest/resources.neu',
     data: {},
   }
 

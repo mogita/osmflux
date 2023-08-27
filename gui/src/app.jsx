@@ -9,21 +9,26 @@ import { getCommandPath } from './utils/cmd'
 function App() {
   const [xmlPath, setXmlPath] = useState('')
   const [csvPath, setCSVPath] = useState('')
+  const [checkingUpdate, setCheckingUpdate] = useState(false)
 
   useEffect(() => {
     console.log(window)
   }, [])
 
   const checkForUpdate = async () => {
+    if (checkForUpdate) {
+      return
+    }
     try {
-      const url = `https://static.nextbillion.io/tools/osmflux/releases/dev/update_manifest.json?ts=${+new Date()}`
+      setCheckingUpdate(true)
+      const url = `https://static.mogita.com/osmflux/releases/stable/latest/update_manifest.json?ts=${+new Date()}`
       const manifest = await updater.checkForUpdates(url)
       console.log(manifest, NL_APPVERSION)
 
       if (manifest.version != NL_APPVERSION) {
         const choice = await os.showMessageBox(
           'OsmFlux',
-          `Version ${manifest.version} is available, you have ${NL_APPVERSION}.\n\nRestart OsmFlux and update now?`,
+          `A newer version ${manifest.version} is available, you have ${NL_APPVERSION}.\n\nWoudl you like to restart OsmFlux and update now?`,
           'YES_NO',
           'INFO',
         )
@@ -37,6 +42,8 @@ function App() {
     } catch (err) {
       console.error(err)
       os.showMessageBox('OsmFlux', err.toString(), 'OK', 'ERROR')
+    } finally {
+      setCheckingUpdate(false)
     }
   }
 
@@ -102,7 +109,7 @@ function App() {
               </Text>
             </Box>
             <Box flexGrow={1} textAlign='right'>
-              <Button size='xs' onClick={checkForUpdate}>
+              <Button size='xs' isDisabled={checkingUpdate} onClick={checkForUpdate}>
                 Check for Update
               </Button>
             </Box>
