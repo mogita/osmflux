@@ -16,7 +16,7 @@ function App() {
   }, [])
 
   const checkForUpdate = async () => {
-    if (checkForUpdate) {
+    if (checkingUpdate) {
       return
     }
     try {
