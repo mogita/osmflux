@@ -25,7 +25,7 @@
       "fullScreen": false,
       "alwaysOnTop": false,
       "icon": "/gui/public/512x512@2x.png",
-      "enableInspector": false,
+      "enableInspector": true,
       "borderless": false,
       "maximize": false,
       "hidden": false,
