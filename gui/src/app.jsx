@@ -9,6 +9,7 @@ import { getCommandPath } from './utils/cmd'
 function App() {
   const [xmlPath, setXmlPath] = useState('')
   const [csvPath, setCSVPath] = useState('')
+  const [cmdRunning, setCmdRunning] = useState(false)
   const [checkingUpdate, setCheckingUpdate] = useState(false)
 
   useEffect(() => {
@@ -48,7 +49,11 @@ function App() {
   }
 
   const convert = async () => {
+    if (cmdRunning) {
+      return
+    }
     try {
+      setCmdRunning(true)
       const cmd = await getCommandPath('glancet')
       const fullCmd = `${cmd} convert-josm-validation --xml ${xmlPath} --csv ${csvPath}`
       await os.spawnProcess(`echo "🤖 ${fullCmd}"`)
@@ -56,6 +61,8 @@ function App() {
     } catch (err) {
       console.error(err)
       os.showMessageBox('OsmFlux', err.toString(), 'OK', 'ERROR')
+    } finally {
+      setCmdRunning(false)
     }
   }
 
@@ -109,7 +116,7 @@ function App() {
               </Text>
             </Box>
             <Box flexGrow={1} textAlign='right'>
-              <Button size='xs' isDisabled={checkingUpdate} onClick={checkForUpdate}>
+              <Button size='xs' isLoading={checkingUpdate} isDisabled={checkingUpdate} onClick={checkForUpdate}>
                 Check for Update
               </Button>
             </Box>
@@ -139,6 +146,7 @@ function App() {
             w='100%'
             onClick={convert}
             isDisabled={!(xmlPath && csvPath)}
+            isLoading={cmdRunning}
           >
             Convert
           </Button>
