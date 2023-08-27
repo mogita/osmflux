@@ -53,6 +53,8 @@ This project contains pre-compiled binaries from the following projects:
 - [glancet](https://gitlab.com/mogita/glancet)
 - [osmfilter](https://gitlab.com/osm-c-tools/osmctools)
 
+You can read detailed credits in [CREDITS.md](CREDITS.md).
+
 # License
 
-This project is licensed under the terms of the [MIT license](LICENSE).
+This project is licensed under the terms of the [AGPLv3 license](LICENSE).
