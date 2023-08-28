@@ -21,12 +21,11 @@ OsmFlux provides a graphical interface for a curated range of OSM tools to help 
 
 ![OsmFlux Screenshot](preview.png 'OsmFlux Screenshot')
 
-# Features
+# Roadmap
 
 - [x] JOSM Validation Conversion
-- [ ] Osmfilter
-- [ ] Osmconvert
-- [ ] Osmosis
+- [ ] PBF Conversion
+- [ ] PBF Manipulation
 
 # Supported Platforms
 
