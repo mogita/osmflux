@@ -43,6 +43,29 @@ yarn
 
 # start dev server
 yarn dev
+
+# build binaries of OsmFlux
+yarn build
+
+# build binaries AND make packages for final distribution
+yarn release
+```
+
+## Folder Structure
+
+```bash
+├── bin             # Neutralino.js binaries, only appears after dependency installation
+├── commands        # binaries that will be included in OsmFlux to provide certain features
+│   ├── glancet
+│   └── osmfilter
+├── dist            # The output directory of building and packaging
+│   ├── archives
+│   ├── osmflux
+│   └── packages
+└── gui             # The source code of OsmFlux's UI and functionalities
+    ├── build
+    ├── public
+    └── src
 ```
 
 # Credit
