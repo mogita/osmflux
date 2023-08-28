@@ -5,7 +5,6 @@ import path from 'path'
 import archiver from 'archiver'
 import { rimrafSync } from 'rimraf'
 import replaceInFile from 'replace-in-file'
-import { IconIcns } from '@shockpkg/icon-encoder'
 import commands from './commands/meta.js'
 
 const getPath = (...parts) => {
@@ -131,8 +130,6 @@ const buildWindowsPackage = async () => {
 
 const buildMacOSPackage = async () => {
   console.log('[darwin] building darwin packages...')
-  const icns = new IconIcns()
-  const raw = true
 
   const binaryNameArm = `${appName}-mac_arm64`
   const binaryNameX64 = `${appName}-mac_x64`
@@ -184,22 +181,14 @@ const buildMacOSPackage = async () => {
     )
   }
 
-  // check if icon file exists
-  console.log('[darwin] making the icon...')
-  if (fs.existsSync(getPath('gui', 'public', '512x512@2x.png'))) {
-    icns.addFromPng(fs.readFileSync(getPath('gui', 'public', '512x512@2x.png')), ['ic10'], raw)
-  }
-  if (fs.existsSync(getPath('gui', 'public', '512x512.png'))) {
-    icns.addFromPng(fs.readFileSync(getPath('gui', 'public', '512x512.png')), ['ic09'], raw)
-  }
-  // save icns file
-  fs.writeFileSync(
+  console.log('[darwin] copying the icon...')
+  fs.copySync(
+    getPath('gui', 'public', 'osmflux.icns'),
     getPath('dist', 'packages', 'darwin', `${appName}-arm64.app`, 'Contents', 'Resources', 'AppIcon.icns'),
-    icns.encode(),
   )
-  fs.writeFileSync(
+  fs.copySync(
+    getPath('gui', 'public', 'osmflux.icns'),
     getPath('dist', 'packages', 'darwin', `${appName}-x64.app`, 'Contents', 'Resources', 'AppIcon.icns'),
-    icns.encode(),
   )
 
   // add starting script

@@ -24,7 +24,7 @@
       "minHeight": 720,
       "fullScreen": false,
       "alwaysOnTop": false,
-      "icon": "/gui/public/512x512@2x.png",
+      "icon": "/gui/public/osmflux.png",
       "enableInspector": true,
       "borderless": false,
       "maximize": false,
