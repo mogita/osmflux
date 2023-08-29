@@ -14,7 +14,7 @@
     "enabled": true,
     "writeToLogFile": false
   },
-  "nativeAllowList": ["filesystem.*", "app.*", "os.*", "computer.*", "storage.*", "debug.log"],
+  "nativeAllowList": ["filesystem.*", "app.*", "os.*", "computer.*", "storage.*", "window.*", "debug.log"],
   "modes": {
     "window": {
       "title": "OsmFlux",
