@@ -4,10 +4,11 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently -k 'yarn:dev:vite' 'yarn:dev:neu'",
+    "fixindexhtml": "node fix-index-html.js",
+    "dev": "yarn fixindexhtml && concurrently -k 'yarn:dev:vite' 'yarn:dev:neu'",
     "dev:vite": "vite serve",
     "dev:neu": "neu run --frontend-lib-dev -- --window-enable-inspector",
-    "build": "yarn build:vite && yarn build:neu",
+    "build": "yarn fixindexhtml && yarn build:vite && yarn build:neu",
     "build:vite": "vite build",
     "build:neu": "neu build",
     "release": "node build-release.js",
@@ -22,7 +23,8 @@
     "framer-motion": "^10.16.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^4.10.1"
+    "react-icons": "^4.10.1",
+    "react-router-dom": "^6.15.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

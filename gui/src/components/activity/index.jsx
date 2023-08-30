@@ -1,9 +1,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { Box, Button, Checkbox } from '@chakra-ui/react'
+import { Box, Button, Checkbox, Heading, Text } from '@chakra-ui/react'
 import { events } from '@neutralinojs/lib'
 import { BsFillTrash3Fill } from 'react-icons/bs'
 
-export default function Terminal() {
+export default function Activity() {
   const screenEndRef = useRef(null)
   const [outputs, setOutputs] = useState([])
   const [stickToBottom, setSitckToBottom] = useState(true)
@@ -38,10 +38,17 @@ export default function Terminal() {
   }, [])
 
   return (
-    <Box w='100%' h='100%' borderRadius={6} overflow='hidden' display='flex' flexDirection='column'>
+    <Box w='100%' h='100%' overflow='hidden' display='flex' flexDirection='column'>
       <Box h='40px' px={2} display='flex' alignItems='center' justifyContent='space-between' bg='#40403f'>
         <Box fontWeight='bold' flexGrow={1}>
-          Logs
+          <Box display='flex' alignItems='center'>
+            <Heading size='sm' mr={2}>
+              Activity
+            </Heading>
+            <Text color='gray' fontWeight='light' fontSize='sm'>
+              Press Escape to dismiss
+            </Text>
+          </Box>
         </Box>
         <Box display='flex' alignItems='center'>
           <Checkbox size='sm' isChecked={stickToBottom} onChange={(e) => setSitckToBottom(e.target.checked)}>

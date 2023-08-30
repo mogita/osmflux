@@ -29,11 +29,8 @@
       "borderless": false,
       "maximize": false,
       "hidden": false,
-      "resizable": false,
+      "resizable": true,
       "exitProcessOnClose": true
-    },
-    "browser": {
-      "nativeBlockList": ["filesystem.*"]
     }
   },
   "cli": {
