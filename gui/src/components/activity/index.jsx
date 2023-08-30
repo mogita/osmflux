@@ -1,12 +1,9 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { Box, Button, Checkbox, Heading, Text } from '@chakra-ui/react'
-import { events } from '@neutralinojs/lib'
 import { BsFillTrash3Fill } from 'react-icons/bs'
 
-export default function Activity() {
+export default function Activity({ outputs, setOutputs, stickToBottom, setStickToBottom }) {
   const screenEndRef = useRef(null)
-  const [outputs, setOutputs] = useState([])
-  const [stickToBottom, setSitckToBottom] = useState(true)
 
   const scrollToBottom = () => {
     setTimeout(() => {
@@ -19,23 +16,6 @@ export default function Activity() {
   useLayoutEffect(scrollToBottom, [outputs])
 
   useEffect(scrollToBottom, [stickToBottom])
-
-  useEffect(() => {
-    events.on('spawnedProcess', (evt) => {
-      switch (evt.detail.action) {
-        case 'stdOut':
-          const out = evt.detail.data.split('\n')
-          setOutputs((o) => [...o, ...out])
-          break
-        case 'stdErr':
-          setOutputs((o) => [...o, `error: ${evt.detail.data}`])
-          break
-        case 'exit':
-          setOutputs((o) => [...o, ` `])
-          break
-      }
-    })
-  }, [])
 
   return (
     <Box w='100%' h='100%' overflow='hidden' display='flex' flexDirection='column'>
@@ -51,7 +31,7 @@ export default function Activity() {
           </Box>
         </Box>
         <Box display='flex' alignItems='center'>
-          <Checkbox size='sm' isChecked={stickToBottom} onChange={(e) => setSitckToBottom(e.target.checked)}>
+          <Checkbox size='sm' isChecked={stickToBottom} onChange={(e) => setStickToBottom(e.target.checked)}>
             Auto-scroll
           </Checkbox>
         </Box>
