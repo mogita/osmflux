@@ -4,7 +4,6 @@ import fs from 'fs-extra'
 import path from 'path'
 import archiver from 'archiver'
 import { rimrafSync } from 'rimraf'
-import replaceInFile from 'replace-in-file'
 import commands from './commands/meta.js'
 
 const getPath = (...parts) => {
@@ -15,15 +14,6 @@ const config = fs.readJsonSync(getPath('neutralino.config.json'))
 const appName = config.cli.binaryName
 const applicationId = config.applicationId
 const appVersion = config.version
-
-const fixIndexHtml = async () => {
-  const options = {
-    files: 'gui/index.html',
-    from: /<script src="http:\/\/localhost:\d+\/__neutralino_globals\.js"><\/script>/,
-    to: '<script src="/__neutralino_globals.js"></script>',
-  }
-  return replaceInFile(options)
-}
 
 const buildBaseApp = async () => {
   console.log(`[build] building ${appName}...`)
@@ -297,8 +287,7 @@ const catchAndExit = (err) => {
   process.exit(1)
 }
 
-fixIndexHtml()
-  .then(buildBaseApp)
+buildBaseApp()
   .then(buildLinuxPackage)
   .then(buildMacOSPackage)
   .then(buildWindowsPackage)
