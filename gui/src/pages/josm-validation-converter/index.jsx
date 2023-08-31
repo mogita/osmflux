@@ -17,10 +17,11 @@ export default function JOSMValidationConverter() {
     try {
       setCmdRunning(true)
       const cmd = await getCommandPath('glancet')
-      const fullCmd = `${cmd} convert-josm-validation --xml ${xmlPath} --csv ${csvPath}`
+      const fullCmd = `${cmd} convert-josm-validation --xml "${xmlPath}" --csv "${csvPath}"`
       await os.spawnProcess(`echo "🤖 ${fullCmd}"`)
       const result = await os.execCommand(fullCmd)
       await os.spawnProcess(`echo "${result.stdOut}"`)
+      await os.spawnProcess(`echo "${result.stdErr}"`)
     } catch (err) {
       console.error(err)
       os.showMessageBox('OsmFlux', err.toString(), 'OK', 'ERROR')
