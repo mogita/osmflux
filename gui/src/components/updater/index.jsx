@@ -3,8 +3,7 @@ import axios from 'axios'
 import { filesystem, os, updater } from '@neutralinojs/lib'
 import { Button } from '@chakra-ui/react'
 import { getLocalCommandList, getOSInfo } from '../../utils/cmd'
-import { getBasePath, getFileMD5 } from '../../utils/fs'
-import { sleep } from '../../utils/sleep'
+import { getFileMD5 } from '../../utils/fs'
 
 export default function Updater() {
   const [checkingUpdate, setCheckingUpdate] = useState(false)
@@ -23,7 +22,7 @@ export default function Updater() {
       if (manifest.version != NL_APPVERSION) {
         const choice = await os.showMessageBox(
           'OsmFlux',
-          `A newer version ${manifest.version} is available, you have ${NL_APPVERSION}.\n\nWoudl you like to restart OsmFlux and update now?`,
+          `A newer version ${manifest.version} is available, you have ${NL_APPVERSION}.\n\nWould you like to restart OsmFlux and update now?`,
           'YES_NO',
           'INFO',
         )
