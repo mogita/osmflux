@@ -65,7 +65,7 @@ export default function JOSMValidationConverter() {
   }
 
   return (
-    <Flex direction='column' p={2} justifyContent='space-between' h='100%' w='100%'>
+    <Flex direction='column' justifyContent='space-between' h='100%' w='100%'>
       <Flex w='100%' mb={2} justifyContent='center' alignItems='center' alignContent='center'>
         <Box w='50%'>
           <Button onClick={openXML} size='xs' colorScheme='telegram'>

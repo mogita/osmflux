@@ -1,7 +1,21 @@
 import { useEffect, useState } from 'react'
 import { app, events, os, updater } from '@neutralinojs/lib'
-import { Box, Button, Drawer, DrawerBody, DrawerContent, DrawerOverlay, Flex, Heading, Text } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerOverlay,
+  Flex,
+  FormControl,
+  FormLabel,
+  Select,
+  Text,
+} from '@chakra-ui/react'
+import { RxActivityLog } from 'react-icons/rx'
 import Activity from '../activity'
+import router from './../../router'
 
 export default function TopBar() {
   const [checkingUpdate, setCheckingUpdate] = useState(false)
@@ -64,11 +78,31 @@ export default function TopBar() {
   }
 
   return (
-    <Flex h='120px' px={3} pt={2}>
-      <Box flexGrow={1}>
-        <Heading>OsmFlux</Heading>
-        <Heading size='md'>JOSM Validation Converter</Heading>
-      </Box>
+    <Flex h='100px' px={3} pt={2} bg='#303030'>
+      <Flex direction='column' flexGrow={1} maxW='600px'>
+        <FormControl>
+          <Flex alignItems='center' border='1px solid #4d4d4d' borderRadius={5}>
+            <FormLabel m={0} mb={1}>
+              <Text fontSize='sm' fontWeight='bold' display='inline' mx={3}>
+                Browser
+              </Text>
+            </FormLabel>
+
+            <Select variant='filled' size='sm' onChange={(evt) => router.navigate(evt.target.value)}>
+              <option value='/'>JOSM Validation Conversion</option>
+              <option value='/osm-tag-filter'>OSM Tag Filter</option>
+            </Select>
+          </Flex>
+        </FormControl>
+
+        <Box mt={2}>
+          <Button leftIcon={<RxActivityLog />} size='xs' onClick={showActivityWindow}>
+            Activity
+          </Button>
+        </Box>
+      </Flex>
+
+      <Box flexGrow={1} />
 
       <Flex direction='column'>
         <Box mb={1}>
@@ -79,11 +113,6 @@ export default function TopBar() {
         <Box mb={1} textAlign='right'>
           <Button size='xs' isLoading={checkingUpdate} isDisabled={checkingUpdate} onClick={checkForUpdate}>
             Check for Update
-          </Button>
-        </Box>
-        <Box textAlign='right'>
-          <Button size='xs' onClick={showActivityWindow}>
-            Activity
           </Button>
         </Box>
       </Flex>

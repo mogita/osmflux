@@ -9,4 +9,9 @@ export default {
     darwin: ['arm', 'x64'],
     'windows nt': ['arm', 'x64'],
   },
+  osmconvert: {
+    linux: ['arm', 'x64'],
+    darwin: ['arm', 'x64'],
+    'windows nt': ['arm', 'x64'],
+  },
 }
