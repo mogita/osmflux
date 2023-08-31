@@ -110,7 +110,7 @@ const buildWindowsPackage = async () => {
   // copy commands into the app package
   for (const cmd in commands) {
     fs.copySync(
-      getPath('commands', cmd, 'windows nt', 'x64', `${cmd}.exe`),
+      getPath('commands', cmd, 'windows', 'x64', `${cmd}.exe`),
       getPath('dist', 'packages', 'windows', `${appName}-x64`, 'commands', `${cmd}.exe`),
     )
   }
@@ -276,7 +276,9 @@ const generateUpdateManifest = async () => {
     applicationId: applicationId,
     version: appVersion,
     resourcesURL: 'https://static.mogita.com/osmflux/releases/stable/latest/resources.neu',
-    data: {},
+    data: {
+      commands,
+    },
   }
 
   fs.writeFileSync(getPath('dist', 'update_manifest.json'), JSON.stringify(manifest))

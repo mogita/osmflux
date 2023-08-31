@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
-import { events } from '@neutralinojs/lib'
+import { filesystem, events, os } from '@neutralinojs/lib'
 import { Box, Button, Drawer, DrawerBody, DrawerContent, DrawerOverlay, Flex, Heading, Text } from '@chakra-ui/react'
 import Activity from '../activity'
 import Updater from '../updater'
+import md5 from 'md5'
+import { getBasePath } from '../../utils/fs'
 
 export default function TopBar() {
   const [showActivity, setShowActivity] = useState(false)
