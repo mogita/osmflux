@@ -26,7 +26,6 @@ export const getBasePath = () => {
 
 export const getFileMD5 = async (filepath) => {
   try {
-    console.log(filepath)
     const data = await filesystem.readBinaryFile(filepath)
     return md5(new Uint8Array(data))
   } catch (err) {

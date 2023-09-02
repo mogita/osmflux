@@ -2,7 +2,7 @@ import { computer, filesystem, os } from '@neutralinojs/lib'
 import path from './../utils/path'
 import { getBasePath } from './fs'
 
-// getOSInfo returns standardized lower case os and kernel names
+// getOSInfo returns standardized lower case os and arch names
 // possible "os": linux, darwin, windows
 // possible "arch": x64, arm64
 export const getOSInfo = async () => {
@@ -29,7 +29,7 @@ export const getCommandPath = async (cmd = '') => {
 }
 
 export const getLocalCommandList = async () => {
-  const list = []
+  let list = []
   if (import.meta.env.DEV === true) {
     // it's a bit complicated for local dev from a released version, this function gathers the commands for current platform
     // and put them into a dev-only folder (will be created if not exists), then return the command list mimicking the
@@ -46,7 +46,6 @@ export const getLocalCommandList = async () => {
     for (const dir of dirs) {
       const srcPath = `${dir.dirPath}/${info.os}/${info.arch}/${dir.cmd}`
       const targetPath = `${getBasePath()}/commands/dev-only/${dir.cmd}`
-      console.log({ srcPath, targetPath })
       await filesystem.copyFile(srcPath, targetPath)
       list.push({ localPath: targetPath, cmd: dir.cmd, md5: '' })
     }

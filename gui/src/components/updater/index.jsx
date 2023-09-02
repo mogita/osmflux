@@ -6,18 +6,17 @@ import { getLocalCommandList, getOSInfo } from '../../utils/cmd'
 import { getFileMD5 } from '../../utils/fs'
 
 export default function Updater() {
-  const [checkingUpdate, setCheckingUpdate] = useState(false)
+  const [updateInProgress, setUpdateInProgress] = useState(false)
   const [channel] = useState(import.meta.env.DEV === true ? 'dev' : 'stable')
 
   const checkForUpdate = async () => {
-    if (checkingUpdate) {
+    if (updateInProgress) {
       return
     }
     try {
-      setCheckingUpdate(true)
+      setUpdateInProgress(true)
       const url = `https://static.mogita.com/osmflux/releases/${channel}/latest/update_manifest.json?ts=${+new Date()}`
       const manifest = await updater.checkForUpdates(url)
-      console.debug(manifest, NL_APPVERSION)
 
       if (manifest.version != NL_APPVERSION) {
         const choice = await os.showMessageBox(
@@ -38,22 +37,12 @@ export default function Updater() {
       console.error(err)
       os.showMessageBox('OsmFlux', 'Update failed:\n\n' + err.toString(), 'OK', 'ERROR')
     } finally {
-      setCheckingUpdate(false)
+      setUpdateInProgress(false)
     }
   }
 
-  const test = async () => {
-    const url = `https://static.mogita.com/osmflux/releases/${channel}/latest/update_manifest.json?ts=${+new Date()}`
-    const manifest = await updater.checkForUpdates(url)
-    try {
-      await updateCommands(manifest?.data?.commands)
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
+  // TODO: currently only does command adding or update, no deletion to the obsolete commands will be performed
   const updateCommands = async (remoteCommands) => {
-    console.log(JSON.stringify(remoteCommands, null, 2))
     if (!remoteCommands) {
       console.debug('remoteCommands not set, will not update commands')
       return
@@ -61,14 +50,11 @@ export default function Updater() {
     try {
       // gather md5 checksums for local commands
       const localCommands = await getLocalCommandList()
-      console.log('before localCommands', localCommands)
       for (const localCmd in localCommands) {
         localCommands[localCmd].md5 = await getFileMD5(localCommands[localCmd].localPath)
       }
-      console.log('localCommands', localCommands)
 
       const info = await getOSInfo()
-
       const toUpdate = []
 
       for (const remoteKey in remoteCommands) {
@@ -78,6 +64,8 @@ export default function Updater() {
         if (localCommands[cmd] && remoteMD5 && remoteMD5 === localCommands[cmd].md5) {
           continue
         }
+        // if local commands don't have the remote command, or the local comman's md5 is different than the remote
+        // command's md5, update the command to remote version
         toUpdate.push({
           localPath: localCommands[cmd].localPath,
           remotePath: `https://static.mogita.com/osmflux/releases/${channel}/latest/commands/${remoteKey}/${info.os}/${
@@ -87,8 +75,6 @@ export default function Updater() {
           localMD5: localCommands[cmd].md5,
         })
       }
-
-      console.log('toUpdate', toUpdate)
 
       for (const update of toUpdate) {
         try {
@@ -110,18 +96,14 @@ export default function Updater() {
         }
       }
     } catch (err) {
-      console.error(err)
-      // throw err
+      throw err
     }
   }
 
   return (
     <>
-      <Button size='xs' isLoading={checkingUpdate} isDisabled={checkingUpdate} onClick={checkForUpdate}>
+      <Button size='xs' isLoading={updateInProgress} isDisabled={updateInProgress} onClick={checkForUpdate}>
         Check for Update
-      </Button>
-      <Button size='xs' onClick={test}>
-        Test
       </Button>
     </>
   )
