@@ -45,8 +45,7 @@ upload-gitlab-registry:
   stage: upload-gitlab-registry
   image: curlimages/curl:latest
   only:
-    - tags
-    - main
+    - tags@main
   script:
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/archives/osmflux-darwin-arm64.app.zip ${PACKAGE_REGISTRY_URL}/osmflux-darwin-arm64.app.zip'
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/archives/osmflux-darwin-x64.app.zip ${PACKAGE_REGISTRY_URL}/osmflux-darwin-x64.app.zip'
@@ -60,8 +59,7 @@ release-gitlab:
   stage: release-gitlab
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   only:
-    - tags
-    - main
+    - tags@main
   script:
     - |
       release-cli create --name "$CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
