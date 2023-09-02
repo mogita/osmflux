@@ -39,6 +39,7 @@ build:
     name: '$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-$CI_JOB_NAME'
     paths:
       - dist/
+      - commands/
 
 upload-gitlab-registry:
   stage: upload-gitlab-registry
@@ -93,3 +94,4 @@ release-s3:
     - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp --recursive dist/archives/ s3://$CI_S3_BUCKET/osmflux/releases/$RELEASE_CHANNEL/latest/
     - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp dist/update_manifest.json s3://$CI_S3_BUCKET/osmflux/releases/$RELEASE_CHANNEL/latest/
     - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp dist/osmflux/resources.neu s3://$CI_S3_BUCKET/osmflux/releases/$RELEASE_CHANNEL/latest/
+    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp --recursive commands/ s3://$CI_S3_BUCKET/osmflux/releases/$RELEASE_CHANNEL/latest/commands/
