@@ -1,6 +1,6 @@
 stages:
   - build
-  - upload
+  - upload-gitlab-registry
   - release-gitlab
   - release-s3
 
@@ -8,6 +8,20 @@ variables:
   PACKAGE_REGISTRY_URL: '${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/osmflux/${CI_COMMIT_TAG}'
 
 before_script:
+  - |
+    if [ "$CI_COMMIT_REF_NAME" = "main" ]; then
+      echo "Current branch is main, checking tag format..."
+      if [[ ! "$CI_COMMIT_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        echo "ERROR: Tag format for main branch is incorrect. It should be in the format: 1.0.0, that's 3 digital parts with no prefix or suffix"
+        exit 1
+      fi
+    else
+      echo "Current branch is non-main, checking tag format..."
+      if [[ ! "$CI_COMMIT_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+-mr[0-9]+\.[0-9]+$ ]]; then
+        echo "ERROR: Tag format for non-main branches is incorrect. It should be in the format: 1.0.0-mr5.1, that's 3 digital parts, dash, 'mr' and merge request ID, dot, build sequence"
+        exit 1
+      fi
+    fi
   - |
     sed -i "s/\$CI_RELEASE_VERSION/$CI_COMMIT_TAG/" ${CI_PROJECT_DIR}/neutralino.config.json
 
@@ -20,17 +34,18 @@ build:
     # - script to zip the source code and later put into dist for src backup
     - npm i -g @neutralinojs/neu
     - yarn
-    - yarn release
+    - if [ "$CI_COMMIT_REF_NAME" = "main" ]; then yarn release stable; else yarn release; fi
   artifacts:
     name: '$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-$CI_JOB_NAME'
     paths:
       - dist/
 
-upload:
-  stage: upload
+upload-gitlab-registry:
+  stage: upload-gitlab-registry
   image: curlimages/curl:latest
   only:
     - tags
+    - main
   script:
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/archives/osmflux-darwin-arm64.app.zip ${PACKAGE_REGISTRY_URL}/osmflux-darwin-arm64.app.zip'
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/archives/osmflux-darwin-x64.app.zip ${PACKAGE_REGISTRY_URL}/osmflux-darwin-x64.app.zip'
@@ -45,6 +60,7 @@ release-gitlab:
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   only:
     - tags
+    - main
   script:
     - |
       release-cli create --name "$CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
@@ -65,9 +81,15 @@ release-s3:
     - mkdir -p ~/.aws
     - cp $CI_AWS_CONFIG ~/.aws/config
     - cp $CI_AWS_CREDENTIALS ~/.aws/credentials
-    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp --recursive dist/archives/ s3://$CI_S3_BUCKET/osmflux/releases/stable/$CI_COMMIT_TAG/
-    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp dist/update_manifest.json s3://$CI_S3_BUCKET/osmflux/releases/stable/$CI_COMMIT_TAG/
-    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp dist/osmflux/resources.neu s3://$CI_S3_BUCKET/osmflux/releases/stable/$CI_COMMIT_TAG/
-    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp --recursive dist/archives/ s3://$CI_S3_BUCKET/osmflux/releases/stable/latest/
-    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp dist/update_manifest.json s3://$CI_S3_BUCKET/osmflux/releases/stable/latest/
-    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp dist/osmflux/resources.neu s3://$CI_S3_BUCKET/osmflux/releases/stable/latest/
+    - |
+      if [ "$CI_COMMIT_REF_NAME" = "main" ]; then
+        RELEASE_CHANNEL="stable"
+      else
+        RELEASE_CHANNEL="dev"
+      fi
+    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp --recursive dist/archives/ s3://$CI_S3_BUCKET/osmflux/releases/$RELEASE_CHANNEL/$CI_COMMIT_TAG/
+    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp dist/update_manifest.json s3://$CI_S3_BUCKET/osmflux/releases/$RELEASE_CHANNEL/$CI_COMMIT_TAG/
+    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp dist/osmflux/resources.neu s3://$CI_S3_BUCKET/osmflux/releases/$RELEASE_CHANNEL/$CI_COMMIT_TAG/
+    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp --recursive dist/archives/ s3://$CI_S3_BUCKET/osmflux/releases/$RELEASE_CHANNEL/latest/
+    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp dist/update_manifest.json s3://$CI_S3_BUCKET/osmflux/releases/$RELEASE_CHANNEL/latest/
+    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp dist/osmflux/resources.neu s3://$CI_S3_BUCKET/osmflux/releases/$RELEASE_CHANNEL/latest/
