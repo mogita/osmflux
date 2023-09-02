@@ -6,6 +6,14 @@ import archiver from 'archiver'
 import { rimrafSync } from 'rimraf'
 import commands from './commands/meta.js'
 
+// check release channel, accepts either "dev" (default) or "stable"
+let channel = 'dev'
+if (process.argv[2] && process.argv[2] === 'stable') {
+  channel = 'stable'
+}
+
+console.log(`[releaser] will build release for the <${channel}> channel`)
+
 const getPath = (...parts) => {
   return path.resolve(process.cwd(), ...parts)
 }
@@ -110,7 +118,7 @@ const buildWindowsPackage = async () => {
   // copy commands into the app package
   for (const cmd in commands) {
     fs.copySync(
-      getPath('commands', cmd, 'windows nt', 'x64', `${cmd}.exe`),
+      getPath('commands', cmd, 'windows', 'x64', `${cmd}.exe`),
       getPath('dist', 'packages', 'windows', `${appName}-x64`, 'commands', `${cmd}.exe`),
     )
   }
@@ -275,8 +283,10 @@ const generateUpdateManifest = async () => {
   const manifest = {
     applicationId: applicationId,
     version: appVersion,
-    resourcesURL: 'https://static.mogita.com/osmflux/releases/stable/latest/resources.neu',
-    data: {},
+    resourcesURL: `https://static.mogita.com/osmflux/releases/${channel}/latest/resources.neu`,
+    data: {
+      commands,
+    },
   }
 
   fs.writeFileSync(getPath('dist', 'update_manifest.json'), JSON.stringify(manifest))

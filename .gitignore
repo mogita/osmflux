@@ -6,6 +6,7 @@
 /bin
 /dist
 gui/build/
+commands/dev-only/
 
 # Neutralinojs client (minified)
 neutralino.js
