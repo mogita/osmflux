@@ -6,6 +6,14 @@ import archiver from 'archiver'
 import { rimrafSync } from 'rimraf'
 import commands from './commands/meta.js'
 
+// check release channel, accepts either "dev" (default) or "stable"
+let channel = 'dev'
+if (process.argv[2] && process.argv[2] === 'stable') {
+  channel = 'stable'
+}
+
+console.log(`[releaser] will build release for the <${channel}> channel`)
+
 const getPath = (...parts) => {
   return path.resolve(process.cwd(), ...parts)
 }
@@ -275,7 +283,7 @@ const generateUpdateManifest = async () => {
   const manifest = {
     applicationId: applicationId,
     version: appVersion,
-    resourcesURL: 'https://static.mogita.com/osmflux/releases/stable/latest/resources.neu',
+    resourcesURL: `https://static.mogita.com/osmflux/releases/${channel}/latest/resources.neu`,
     data: {
       commands,
     },
