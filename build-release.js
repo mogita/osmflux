@@ -5,6 +5,7 @@ import path from 'path'
 import archiver from 'archiver'
 import { rimrafSync } from 'rimraf'
 import commands from './commands/meta.js'
+import replaceInFile from 'replace-in-file'
 
 // check release channel, accepts either "dev" (default) or "stable"
 let channel = 'dev'
@@ -23,11 +24,54 @@ const appName = config.cli.binaryName
 const applicationId = config.applicationId
 const appVersion = config.version
 
+const startBuilding = async () => {
+  console.log(`[build] building and releasing started`)
+}
+
+const patchNeutralinoConfig = async () => {
+  // patches the config file to replace the placeholders with actual values that match the version and release channel
+  console.log(`[build] patching neutralino.config.json...`)
+  const version = process.env.CI_COMMIT_TAG
+  if (!version) {
+    throw new Error('CI_COMMIT_TAG is not set, cannot determine version')
+  }
+
+  await replaceInFile({
+    files: 'neutralino.config.json',
+    from: '$CI_RELEASE_VERSION',
+    to: version,
+  })
+
+  await replaceInFile({
+    files: 'neutralino.config.json',
+    from: '$CI_RELEASE_CHANNEL',
+    to: channel,
+  })
+
+  if (channel === 'stable') {
+    await replaceInFile({
+      files: ['neutralino.config.json', 'gui/index.html'],
+      from: 'osmflux-dev.png',
+      to: 'osmflux-stable.png',
+    })
+  }
+}
+
 const buildBaseApp = async () => {
   console.log(`[build] building ${appName}...`)
-  const buildLogs = await execa('yarn', ['build'])
-  console.log(buildLogs.stdout)
-  console.error(buildLogs.stderr)
+  const logs = await execa('yarn', ['build'])
+  console.log(logs.stdout)
+  if (logs.stderr) {
+    if (
+      !logs.stderr
+        .toString()
+        .includes(
+          `<script src="/__neutralino_globals.js"> in "/index.html" can't be bundled without type="module" attribute`,
+        )
+    ) {
+      throw new Error(logs.stderr)
+    }
+  }
 
   // add executing permission, in case more binaries would be used add them in this list to automatically fix permission for them too
   // for now we only care about linux and darwin
@@ -181,11 +225,11 @@ const buildMacOSPackage = async () => {
 
   console.log('[darwin] copying the icon...')
   fs.copySync(
-    getPath('gui', 'public', 'osmflux.icns'),
+    getPath('gui', 'public', `osmflux-${channel}.icns`),
     getPath('dist', 'packages', 'darwin', `${appName}-arm64.app`, 'Contents', 'Resources', 'AppIcon.icns'),
   )
   fs.copySync(
-    getPath('gui', 'public', 'osmflux.icns'),
+    getPath('gui', 'public', `osmflux-${channel}.icns`),
     getPath('dist', 'packages', 'darwin', `${appName}-x64.app`, 'Contents', 'Resources', 'AppIcon.icns'),
   )
 
@@ -297,7 +341,9 @@ const catchAndExit = (err) => {
   process.exit(1)
 }
 
-buildBaseApp()
+startBuilding()
+  .then(patchNeutralinoConfig)
+  .then(buildBaseApp)
   .then(buildLinuxPackage)
   .then(buildMacOSPackage)
   .then(buildWindowsPackage)
