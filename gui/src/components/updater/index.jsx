@@ -1,13 +1,65 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { filesystem, os, updater } from '@neutralinojs/lib'
+import { filesystem, os, storage, updater } from '@neutralinojs/lib'
 import { Button } from '@chakra-ui/react'
 import { getLocalCommandList, getOSInfo } from '../../utils/cmd'
 import { getFileMD5 } from '../../utils/fs'
+import dayjs from 'dayjs'
 
 export default function Updater() {
   const [updateInProgress, setUpdateInProgress] = useState(false)
   const [channel] = useState(import.meta.env.DEV === true ? 'dev' : 'stable')
+
+  useEffect(() => {
+    autoCheckUpdate()
+  }, [])
+
+  const autoCheckUpdate = async () => {
+    try {
+      const now = dayjs()
+      const lastCheck = await getLastUpdateCheckedAt()
+      if (lastCheck) {
+        // last check has a valid record
+        const shouldCheckAt = now.subtract(12, 'hours')
+        if (lastCheck.isAfter(shouldCheckAt)) {
+          // last check is within the last 12 hours, skip this check
+          return
+        }
+      }
+      // last check is older than 12 hours ago, now let's check for update
+      await setLastUpdateCheckedAt(now)
+      await checkForUpdate()
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const getLastUpdateCheckedAt = async () => {
+    try {
+      const data = await storage.getData('osmflux_last_update_checked_at')
+      const lastCheckedAt = dayjs(data)
+      if (!lastCheckedAt.isValid()) {
+        return null
+      } else {
+        return lastCheckedAt
+      }
+    } catch (err) {
+      console.error(err)
+      return null
+    }
+  }
+
+  const setLastUpdateCheckedAt = async (datetime) => {
+    try {
+      const data = dayjs(datetime)
+      if (!data.isValid()) {
+        throw new Error('invalid date time format as checking last update time')
+      }
+      await storage.setData('osmflux_last_update_checked_at', data.toString())
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
   const checkForUpdate = async () => {
     if (updateInProgress) {
