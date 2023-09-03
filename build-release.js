@@ -22,7 +22,7 @@ const getPath = (...parts) => {
 const config = fs.readJsonSync(getPath('neutralino.config.json'))
 const appName = config.cli.binaryName
 const applicationId = config.applicationId
-const appVersion = config.version
+const appVersion = process.env.CI_COMMIT_TAG
 
 const startBuilding = async () => {
   console.log(`[build] building and releasing started`)
@@ -31,15 +31,14 @@ const startBuilding = async () => {
 const patchNeutralinoConfig = async () => {
   // patches the config file to replace the placeholders with actual values that match the version and release channel
   console.log(`[build] patching neutralino.config.json...`)
-  const version = process.env.CI_COMMIT_TAG
-  if (!version) {
+  if (!appVersion) {
     throw new Error('CI_COMMIT_TAG is not set, cannot determine version')
   }
 
   await replaceInFile({
     files: 'neutralino.config.json',
     from: '$CI_RELEASE_VERSION',
-    to: version,
+    to: appVersion,
   })
 
   await replaceInFile({
