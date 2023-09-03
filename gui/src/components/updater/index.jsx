@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { filesystem, os, storage, updater } from '@neutralinojs/lib'
+import { filesystem, os, storage, updater, app } from '@neutralinojs/lib'
 import { Button } from '@chakra-ui/react'
 import { getLocalCommandList, getOSInfo } from '../../utils/cmd'
 import { getFileMD5 } from '../../utils/fs'
