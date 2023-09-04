@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { app, events, os, updater } from '@neutralinojs/lib'
+import { events } from '@neutralinojs/lib'
 import {
   Box,
   Button,
@@ -15,10 +15,10 @@ import {
 } from '@chakra-ui/react'
 import { RxActivityLog } from 'react-icons/rx'
 import Activity from '../activity'
-import router from './../../router'
+import Updater from '../updater'
+import router from '../../router'
 
 export default function TopBar() {
-  const [checkingUpdate, setCheckingUpdate] = useState(false)
   const [showActivity, setShowActivity] = useState(false)
 
   const [outputs, setOutputs] = useState([])
@@ -43,38 +43,6 @@ export default function TopBar() {
 
   const showActivityWindow = async () => {
     setShowActivity(true)
-  }
-
-  const checkForUpdate = async () => {
-    if (checkingUpdate) {
-      return
-    }
-    try {
-      setCheckingUpdate(true)
-      const url = `https://static.mogita.com/osmflux/releases/stable/latest/update_manifest.json?ts=${+new Date()}`
-      const manifest = await updater.checkForUpdates(url)
-      console.log(manifest, NL_APPVERSION)
-
-      if (manifest.version != NL_APPVERSION) {
-        const choice = await os.showMessageBox(
-          'OsmFlux',
-          `A newer version ${manifest.version} is available, you have ${NL_APPVERSION}.\n\nWoudl you like to restart OsmFlux and update now?`,
-          'YES_NO',
-          'INFO',
-        )
-        if (choice === 'YES') {
-          await updater.install()
-          await app.restartProcess()
-        }
-      } else {
-        os.showMessageBox('OsmFlux', 'You have the latest version of OsmFlux.', 'OK', 'INFO')
-      }
-    } catch (err) {
-      console.error(err)
-      os.showMessageBox('OsmFlux', err.toString(), 'OK', 'ERROR')
-    } finally {
-      setCheckingUpdate(false)
-    }
   }
 
   return (
@@ -111,9 +79,7 @@ export default function TopBar() {
           </Text>
         </Box>
         <Box mb={1} textAlign='right'>
-          <Button size='xs' isLoading={checkingUpdate} isDisabled={checkingUpdate} onClick={checkForUpdate}>
-            Check for Update
-          </Button>
+          <Updater />
         </Box>
       </Flex>
 

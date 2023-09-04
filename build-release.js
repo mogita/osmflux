@@ -5,6 +5,15 @@ import path from 'path'
 import archiver from 'archiver'
 import { rimrafSync } from 'rimraf'
 import commands from './commands/meta.js'
+import replaceInFile from 'replace-in-file'
+
+// check release channel, accepts either "dev" (default) or "stable"
+let channel = 'dev'
+if (process.argv[2] && process.argv[2] === 'stable') {
+  channel = 'stable'
+}
+
+console.log(`[releaser] will build release for the <${channel}> channel`)
 
 const getPath = (...parts) => {
   return path.resolve(process.cwd(), ...parts)
@@ -13,13 +22,55 @@ const getPath = (...parts) => {
 const config = fs.readJsonSync(getPath('neutralino.config.json'))
 const appName = config.cli.binaryName
 const applicationId = config.applicationId
-const appVersion = config.version
+const appVersion = process.env.CI_COMMIT_TAG
+
+const startBuilding = async () => {
+  console.log(`[build] building and releasing started`)
+}
+
+const patchNeutralinoConfig = async () => {
+  // patches the config file to replace the placeholders with actual values that match the version and release channel
+  console.log(`[build] patching neutralino.config.json...`)
+  if (!appVersion) {
+    throw new Error('CI_COMMIT_TAG is not set, cannot determine version')
+  }
+
+  await replaceInFile({
+    files: 'neutralino.config.json',
+    from: '$CI_RELEASE_VERSION',
+    to: appVersion,
+  })
+
+  await replaceInFile({
+    files: 'neutralino.config.json',
+    from: '$CI_RELEASE_CHANNEL',
+    to: channel,
+  })
+
+  if (channel === 'stable') {
+    await replaceInFile({
+      files: ['neutralino.config.json', 'gui/index.html'],
+      from: 'osmflux-dev.png',
+      to: 'osmflux-stable.png',
+    })
+  }
+}
 
 const buildBaseApp = async () => {
   console.log(`[build] building ${appName}...`)
-  const buildLogs = await execa('yarn', ['build'])
-  console.log(buildLogs.stdout)
-  console.error(buildLogs.stderr)
+  const logs = await execa('yarn', ['build'])
+  console.log(logs.stdout)
+  if (logs.stderr) {
+    if (
+      !logs.stderr
+        .toString()
+        .includes(
+          `<script src="/__neutralino_globals.js"> in "/index.html" can't be bundled without type="module" attribute`,
+        )
+    ) {
+      throw new Error(logs.stderr)
+    }
+  }
 
   // add executing permission, in case more binaries would be used add them in this list to automatically fix permission for them too
   // for now we only care about linux and darwin
@@ -110,7 +161,7 @@ const buildWindowsPackage = async () => {
   // copy commands into the app package
   for (const cmd in commands) {
     fs.copySync(
-      getPath('commands', cmd, 'windows nt', 'x64', `${cmd}.exe`),
+      getPath('commands', cmd, 'windows', 'x64', `${cmd}.exe`),
       getPath('dist', 'packages', 'windows', `${appName}-x64`, 'commands', `${cmd}.exe`),
     )
   }
@@ -173,11 +224,11 @@ const buildMacOSPackage = async () => {
 
   console.log('[darwin] copying the icon...')
   fs.copySync(
-    getPath('gui', 'public', 'osmflux.icns'),
+    getPath('gui', 'public', `osmflux-${channel}.icns`),
     getPath('dist', 'packages', 'darwin', `${appName}-arm64.app`, 'Contents', 'Resources', 'AppIcon.icns'),
   )
   fs.copySync(
-    getPath('gui', 'public', 'osmflux.icns'),
+    getPath('gui', 'public', `osmflux-${channel}.icns`),
     getPath('dist', 'packages', 'darwin', `${appName}-x64.app`, 'Contents', 'Resources', 'AppIcon.icns'),
   )
 
@@ -275,8 +326,10 @@ const generateUpdateManifest = async () => {
   const manifest = {
     applicationId: applicationId,
     version: appVersion,
-    resourcesURL: 'https://static.mogita.com/osmflux/releases/stable/latest/resources.neu',
-    data: {},
+    resourcesURL: `https://static.mogita.com/osmflux/releases/${channel}/latest/resources.neu`,
+    data: {
+      commands,
+    },
   }
 
   fs.writeFileSync(getPath('dist', 'update_manifest.json'), JSON.stringify(manifest))
@@ -287,7 +340,9 @@ const catchAndExit = (err) => {
   process.exit(1)
 }
 
-buildBaseApp()
+startBuilding()
+  .then(patchNeutralinoConfig)
+  .then(buildBaseApp)
   .then(buildLinuxPackage)
   .then(buildMacOSPackage)
   .then(buildWindowsPackage)

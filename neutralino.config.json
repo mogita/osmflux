@@ -15,6 +15,11 @@
     "writeToLogFile": false
   },
   "nativeAllowList": ["filesystem.*", "app.*", "os.*", "computer.*", "storage.*", "window.*", "debug.log"],
+  "globalVariables": {
+    "RELEASE_INFO": {
+      "channel": "$CI_RELEASE_CHANNEL"
+    }
+  },
   "modes": {
     "window": {
       "title": "OsmFlux",
@@ -24,7 +29,7 @@
       "minHeight": 520,
       "fullScreen": false,
       "alwaysOnTop": false,
-      "icon": "/gui/public/osmflux.png",
+      "icon": "/gui/public/osmflux-dev.png",
       "enableInspector": true,
       "borderless": false,
       "maximize": false,
