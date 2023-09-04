@@ -6,6 +6,7 @@ stages:
 
 variables:
   PACKAGE_REGISTRY_URL: '${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/osmflux/${CI_COMMIT_TAG}'
+  CI_RELEASE_CHANNEL: 'dev'
 
 before_script:
   - |
@@ -23,7 +24,7 @@ before_script:
       fi
     fi
   - |
-    sed -i "s/\$CI_RELEASE_VERSION/$CI_COMMIT_TAG/" ${CI_PROJECT_DIR}/neutralino.config.json
+    if [ "$CI_COMMIT_REF_NAME" = "main" ]; then CI_RELEASE_CHANNEL="stable"; fi
 
 build:
   stage: build
@@ -80,16 +81,10 @@ release-s3:
     - mkdir -p ~/.aws
     - cp $CI_AWS_CONFIG ~/.aws/config
     - cp $CI_AWS_CREDENTIALS ~/.aws/credentials
-    - |
-      if [ "$CI_COMMIT_REF_NAME" = "main" ]; then
-        RELEASE_CHANNEL="stable"
-      else
-        RELEASE_CHANNEL="dev"
-      fi
-    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp --recursive dist/archives/ s3://$CI_S3_BUCKET/osmflux/releases/$RELEASE_CHANNEL/$CI_COMMIT_TAG/
-    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp dist/update_manifest.json s3://$CI_S3_BUCKET/osmflux/releases/$RELEASE_CHANNEL/$CI_COMMIT_TAG/
-    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp dist/osmflux/resources.neu s3://$CI_S3_BUCKET/osmflux/releases/$RELEASE_CHANNEL/$CI_COMMIT_TAG/
-    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp --recursive dist/archives/ s3://$CI_S3_BUCKET/osmflux/releases/$RELEASE_CHANNEL/latest/
-    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp dist/update_manifest.json s3://$CI_S3_BUCKET/osmflux/releases/$RELEASE_CHANNEL/latest/
-    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp dist/osmflux/resources.neu s3://$CI_S3_BUCKET/osmflux/releases/$RELEASE_CHANNEL/latest/
-    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp --recursive commands/ s3://$CI_S3_BUCKET/osmflux/releases/$RELEASE_CHANNEL/latest/commands/
+    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp --recursive dist/archives/ s3://$CI_S3_BUCKET/osmflux/releases/$CI_RELEASE_CHANNEL/$CI_COMMIT_TAG/
+    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp dist/update_manifest.json s3://$CI_S3_BUCKET/osmflux/releases/$CI_RELEASE_CHANNEL/$CI_COMMIT_TAG/
+    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp dist/osmflux/resources.neu s3://$CI_S3_BUCKET/osmflux/releases/$CI_RELEASE_CHANNEL/$CI_COMMIT_TAG/
+    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp --recursive dist/archives/ s3://$CI_S3_BUCKET/osmflux/releases/$CI_RELEASE_CHANNEL/latest/
+    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp dist/update_manifest.json s3://$CI_S3_BUCKET/osmflux/releases/$CI_RELEASE_CHANNEL/latest/
+    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp dist/osmflux/resources.neu s3://$CI_S3_BUCKET/osmflux/releases/$CI_RELEASE_CHANNEL/latest/
+    - aws s3 --endpoint-url=$CI_AWS_ENDPOINT_URL cp --recursive commands/ s3://$CI_S3_BUCKET/osmflux/releases/$CI_RELEASE_CHANNEL/latest/commands/

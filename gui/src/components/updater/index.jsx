@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { filesystem, os, storage, updater } from '@neutralinojs/lib'
+import { filesystem, os, storage, updater, app } from '@neutralinojs/lib'
 import { Button } from '@chakra-ui/react'
 import { getLocalCommandList, getOSInfo } from '../../utils/cmd'
 import { getFileMD5 } from '../../utils/fs'
 import dayjs from 'dayjs'
 
+const channel = NL_RELEASE_INFO?.channel === 'dev' || import.meta.env.DEV === true ? 'dev' : 'stable'
+
 export default function Updater() {
   const [updateInProgress, setUpdateInProgress] = useState(false)
-  const [channel] = useState(import.meta.env.DEV === true ? 'dev' : 'stable')
 
   useEffect(() => {
     autoCheckUpdate()
@@ -67,6 +68,9 @@ export default function Updater() {
     }
     try {
       setUpdateInProgress(true)
+      if (channel === 'dev') {
+        await os.spawnProcess(`echo 🤖 checking update on dev channel...`)
+      }
       const url = `https://static.mogita.com/osmflux/releases/${channel}/latest/update_manifest.json?ts=${+new Date()}`
       const manifest = await updater.checkForUpdates(url)
 
