@@ -13,7 +13,7 @@ if (process.argv[2] && process.argv[2] === 'stable') {
   channel = 'stable'
 }
 
-console.log(`[releaser] will build release for the <${channel}> channel`)
+console.log(`[releaser] now building release for the <${channel}> channel...`)
 
 const getPath = (...parts) => {
   return path.resolve(process.cwd(), ...parts)
