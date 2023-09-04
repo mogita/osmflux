@@ -9,6 +9,7 @@ variables:
   CI_RELEASE_CHANNEL: 'dev'
 
 before_script:
+  - echo $CI_COMMIT_REF_NAME
   - |
     if [ "$CI_COMMIT_REF_NAME" = "main" ]; then
       echo "Current branch is main, checking tag format..."
