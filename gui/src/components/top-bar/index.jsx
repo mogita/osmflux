@@ -74,7 +74,7 @@ export default function TopBar() {
 
       <Flex direction='column'>
         <Box mb={1}>
-          <Text fontSize='sm' textAlign='right' color='gray.400'>
+          <Text fontSize='sm' textAlign='right' color='#979797'>
             Version: {NL_APPVERSION}
           </Text>
         </Box>

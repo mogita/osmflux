@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { os } from '@neutralinojs/lib'
-import { Box, Button, Flex, Spacer, Text } from '@chakra-ui/react'
+import { Box, Button, Divider, Flex, Spacer, Text } from '@chakra-ui/react'
 import { TiArrowRepeatOutline } from 'react-icons/ti'
 import { dirname, getLastOpenedDir, setLastOpenedDir } from './../../utils/fs'
 import { getCommandPath } from './../../utils/cmd'
@@ -66,12 +66,19 @@ export default function JOSMValidationConverter() {
 
   return (
     <Flex direction='column' justifyContent='space-between' h='100%' w='100%'>
+      <Flex alignItems='center' mb={3}>
+        <Text color='#666565' fontSize='sm' fontWeight='bold' mr={4}>
+          Parameters
+        </Text>
+        <Divider />
+      </Flex>
+
       <Flex w='100%' mb={2} justifyContent='center' alignItems='center' alignContent='center'>
         <Box w='50%'>
           <Button onClick={openXML} size='xs' colorScheme='telegram'>
             Open XML ...
           </Button>
-          <Text mt={1} fontSize='sm'>
+          <Text mt={1} color='#666565' fontSize='sm'>
             {xmlPath || 'Please choose an XML file'}
           </Text>
         </Box>
@@ -80,7 +87,7 @@ export default function JOSMValidationConverter() {
           <Button onClick={saveCSV} size='xs' colorScheme='telegram'>
             Save CSV As ...
           </Button>
-          <Text mt={1} fontSize='sm'>
+          <Text mt={1} color='#666565' fontSize='sm'>
             {csvPath || 'Please specify where to save the csv file'}
           </Text>
         </Box>

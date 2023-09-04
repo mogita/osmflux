@@ -11,7 +11,7 @@ export default function Layout() {
         <TopBar />
       </Box>
 
-      <Box mb={6} />
+      <Box mb={3} />
 
       <Box flexGrow={1} px={3}>
         <RouterProvider router={router} />
