@@ -46,11 +46,13 @@ upload-gitlab-registry:
   stage: upload-gitlab-registry
   image: curlimages/curl:latest
   only:
-    refs:
-      - main
-    variables:
-      - $CI_COMMIT_TAG =~ /^[0-9]+\.[0-9]+\.[0-9]+$/
+    - tags
   script:
+    - |
+      if [[ ! "$CI_COMMIT_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        echo "tag not in x.y.z format, skip this step"
+        exit 0
+      fi
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/archives/osmflux-darwin-arm64.app.zip ${PACKAGE_REGISTRY_URL}/osmflux-darwin-arm64.app.zip'
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/archives/osmflux-darwin-x64.app.zip ${PACKAGE_REGISTRY_URL}/osmflux-darwin-x64.app.zip'
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/archives/osmflux-linux-arm64.zip ${PACKAGE_REGISTRY_URL}/osmflux-linux-arm64.zip'
@@ -63,11 +65,13 @@ release-gitlab:
   stage: release-gitlab
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   only:
-    refs:
-      - main
-    variables:
-      - $CI_COMMIT_TAG =~ /^[0-9]+\.[0-9]+\.[0-9]+$/
+    - tags
   script:
+    - |
+      if [[ ! "$CI_COMMIT_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        echo "tag not in x.y.z format, skip this step"
+        exit 0
+      fi
     - |
       release-cli create --name "$CI_COMMIT_TAG" --tag-name $CI_COMMIT_TAG \
         --assets-link "{\"name\":\"osmflux-darwin-arm64.app.zip\", \"url\":\"${PACKAGE_REGISTRY_URL}/osmflux-darwin-arm64.app.zip\", \"link_type\": \"package\"}" \
