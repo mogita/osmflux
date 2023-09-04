@@ -9,23 +9,17 @@ variables:
   CI_RELEASE_CHANNEL: 'dev'
 
 before_script:
-  - echo $CI_COMMIT_REF_NAME
   - |
-    if [ "$CI_COMMIT_REF_NAME" = "main" ]; then
-      echo "Current branch is main, checking tag format..."
-      if [[ ! "$CI_COMMIT_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-        echo "ERROR: Tag format for main branch is incorrect. It should be in the format: 1.0.0, that's 3 digital parts with no prefix or suffix"
-        exit 1
-      fi
+    if [[ "$CI_COMMIT_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        echo "Current tag is for the stable release"
+        CI_RELEASE_CHANNEL="stable"
     else
-      echo "Current branch is non-main, checking tag format..."
+      echo "Current tag is for the non-stable release, checking tag format..."
       if [[ ! "$CI_COMMIT_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+-mr[0-9]+\.[0-9]+$ ]]; then
-        echo "ERROR: Tag format for non-main branches is incorrect. It should be in the format: 1.0.0-mr5.1, that's 3 digital parts, dash, 'mr' and merge request ID, dot, build sequence"
+        echo "ERROR: Tag format for non-stable release is incorrect. It should be in the format: 1.0.0-mr5.1, that's 3 digital parts, dash, 'mr' and merge request ID, dot, build sequence"
         exit 1
       fi
     fi
-  - |
-    if [ "$CI_COMMIT_REF_NAME" = "main" ]; then CI_RELEASE_CHANNEL="stable"; fi
 
 build:
   stage: build
@@ -33,10 +27,9 @@ build:
   only:
     - tags
   script:
-    # - script to zip the source code and later put into dist for src backup
     - npm i -g @neutralinojs/neu
     - yarn
-    - if [ "$CI_COMMIT_REF_NAME" = "main" ]; then yarn release stable; else yarn release; fi
+    - yarn release $CI_RELEASE_CHANNEL
   artifacts:
     name: '$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME-$CI_JOB_NAME'
     paths:
@@ -50,8 +43,8 @@ upload-gitlab-registry:
     - tags
   script:
     - |
-      if [[ ! "$CI_COMMIT_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-        echo "tag not in x.y.z format, skip this step"
+      if [[ ! "$CI_RELEASE_CHANNEL" == "stable" ]]; then
+        echo "non-stable release, skip this step"
         exit 0
       fi
     - 'curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" --upload-file dist/archives/osmflux-darwin-arm64.app.zip ${PACKAGE_REGISTRY_URL}/osmflux-darwin-arm64.app.zip'
@@ -69,8 +62,8 @@ release-gitlab:
     - tags
   script:
     - |
-      if [[ ! "$CI_COMMIT_TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-        echo "tag not in x.y.z format, skip this step"
+      if [[ ! "$CI_RELEASE_CHANNEL" == "stable" ]]; then
+        echo "non-stable release, skip this step"
         exit 0
       fi
     - |
