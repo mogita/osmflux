@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { filesystem, os, storage, updater, app } from '@neutralinojs/lib'
 import { Button } from '@chakra-ui/react'
-import { getLocalCommandList, getOSInfo } from '../../utils/cmd'
-import { getFileMD5 } from '../../utils/fs'
 import dayjs from 'dayjs'
+
+import { getLocalCommandDir, getLocalCommandList, getOSInfo } from '../../utils/cmd'
+import { getFileMD5 } from '../../utils/fs'
+import path from '../../utils/path'
 
 const channel = NL_RELEASE_INFO?.channel === 'dev' || import.meta.env.DEV === true ? 'dev' : 'stable'
 
@@ -105,6 +107,7 @@ export default function Updater() {
       return
     }
     try {
+      const dir = getLocalCommandDir()
       // gather md5 checksums for local commands
       const localCommands = await getLocalCommandList()
       for (const localCmd in localCommands) {
@@ -126,7 +129,7 @@ export default function Updater() {
         // if local commands don't have the remote command, or the local comman's md5 is different than the remote
         // command's md5, update the command to remote version
         toUpdate.push({
-          localPath: localCommands?.[cmd]?.localPath ? localCommands[cmd].localPath : null,
+          localPath: localCommands?.[cmd]?.localPath ? localCommands[cmd].localPath : path.join(dir, cmd), // if the command is not present in local env, give it a path for later download
           remotePath: `https://static.mogita.com/osmflux/releases/${channel}/latest/commands/${remoteKey}/${info.os}/${
             info.arch
           }/${cmd}?ts=${+new Date()}`,
@@ -137,8 +140,8 @@ export default function Updater() {
 
       for (const update of toUpdate) {
         try {
-          // backup
-          if (update.localPath) {
+          // backup, having a local md5 means the command already exists on local env
+          if (update.localMD5) {
             await filesystem.moveFile(update.localPath, `${update.localPath}.bak`)
           }
           // download update
@@ -150,12 +153,19 @@ export default function Updater() {
             // restore if not match, could be network glitch or something worse
             throw new Error(`updating command ${update.localPath}, md5 for downloaded and remote file don't match.`)
           }
-          if (update.localPath) {
+          if (info.os !== 'windows') {
+            // ensure command permission on unix systems
+            const res = await os.execCommand(`chmod +x "${update.localPath}"`)
+            if (res.stdErr || res.exitCode > 0) {
+              throw new Error(`chmod failed for ${update.localPath}: ` + res.stdErr)
+            }
+          }
+          if (update.localMD5) {
             await filesystem.removeFile(`${update.localPath}.bak`)
           }
         } catch (_) {
           // revert on error
-          if (update.localPath) {
+          if (update.localMD5) {
             await filesystem.moveFile(`${update.localPath}.bak`, update.localPath)
           }
         }
