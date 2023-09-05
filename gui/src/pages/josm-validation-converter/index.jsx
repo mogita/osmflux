@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { os } from '@neutralinojs/lib'
-import { Box, Button, Divider, Flex, Heading, Spacer, Text } from '@chakra-ui/react'
-import { TiArrowRepeatOutline } from 'react-icons/ti'
+import { Box, Button, Divider, Flex, Heading, Text } from '@chakra-ui/react'
+import { BsFillPlayCircleFill } from 'react-icons/bs'
 import { dirname, getLastOpenedDir, setLastOpenedDir } from './../../utils/fs'
 import { getCommandPath } from './../../utils/cmd'
 
@@ -103,7 +103,7 @@ export default function JOSMValidationConverter() {
 
       <Flex px={4} py={4} mt={8} justifyContent='center' alignItems='center' alignContent='center'>
         <Button
-          leftIcon={<TiArrowRepeatOutline />}
+          leftIcon={<BsFillPlayCircleFill />}
           colorScheme='telegram'
           size='sm'
           minW='30%'
@@ -111,7 +111,7 @@ export default function JOSMValidationConverter() {
           isDisabled={!(xmlPath && csvPath)}
           isLoading={cmdRunning}
         >
-          Convert
+          Start
         </Button>
       </Flex>
     </Flex>

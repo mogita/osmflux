@@ -76,7 +76,7 @@ export default function OsmTagFilter() {
                 Dependencies will be kept.
                 <br />
                 <br />
-                The OSM Tag Filter is currently at pre-alpha stage. Customizable tags and more filter options are
+                Note: the OSM Tag Filter is currently at pre-alpha stage. Customizable tags and more filter options are
                 planned. UI changes might take place in the future.
               </Text>
             }
