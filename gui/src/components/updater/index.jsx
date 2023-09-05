@@ -108,7 +108,9 @@ export default function Updater() {
       // gather md5 checksums for local commands
       const localCommands = await getLocalCommandList()
       for (const localCmd in localCommands) {
-        localCommands[localCmd].md5 = await getFileMD5(localCommands[localCmd].localPath)
+        if (localCommands[localCmd]) {
+          localCommands[localCmd].md5 = await getFileMD5(localCommands[localCmd].localPath)
+        }
       }
 
       const info = await getOSInfo()
