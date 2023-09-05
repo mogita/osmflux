@@ -4,6 +4,8 @@ import { RouterProvider } from 'react-router-dom'
 import TopBar from './components/top-bar'
 import router from './router'
 
+router.navigate('/josm-validation-converter')
+
 export default function Layout() {
   return (
     <Flex direction='column' h='100vh'>
