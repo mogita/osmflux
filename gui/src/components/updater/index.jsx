@@ -126,7 +126,7 @@ export default function Updater() {
         // if local commands don't have the remote command, or the local comman's md5 is different than the remote
         // command's md5, update the command to remote version
         toUpdate.push({
-          localPath: localCommands[cmd].localPath,
+          localPath: localCommands?.[cmd]?.localPath ? localCommands[cmd].localPath : null,
           remotePath: `https://static.mogita.com/osmflux/releases/${channel}/latest/commands/${remoteKey}/${info.os}/${
             info.arch
           }/${cmd}?ts=${+new Date()}`,
