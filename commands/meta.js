@@ -10,8 +10,8 @@ export default {
     windows: { arm64: '40c60a36b832ba9832cb320064a849b7', x64: 'e60b9a3a9f7b49de8e90b7e6eedc28c8' },
   },
   osmconvert: {
-    linux: ['arm', 'x64'],
-    darwin: ['arm', 'x64'],
-    'windows nt': ['arm', 'x64'],
+    linux: { arm64: 'b0ff153f667996fd33685dcccfee27d3', x64: '235347d04bf3b01dc13ff24a546dbea5' },
+    darwin: { arm64: 'd197c5fd4af918257d5407da2d4015f3', x64: '591998c68d48e0658298eaf24ec2f6d3' },
+    windows: { arm64: 'fa13d99a017cb0776133035101c87b27', x64: 'fa13d99a017cb0776133035101c87b27' },
   },
 }
