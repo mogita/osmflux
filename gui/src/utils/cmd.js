@@ -16,15 +16,22 @@ export const getOSInfo = async () => {
   }
 }
 
+export const getLocalCommandDir = () => {
+  if (!NL_PATH) {
+    throw new Error('NL_PATH is not set')
+  }
+  return path.join(NL_PATH, 'commands')
+}
+
 export const getCommandPath = async (cmd = '') => {
   if (!NL_PATH) {
     throw new Error('NL_PATH is not set')
   }
   const info = await getOSInfo()
   if (import.meta.env.DEV === true) {
-    return path.join(NL_PATH, 'commands', cmd, info.os, info.arch, cmd)
+    return path.join(getLocalCommandDir(), cmd, info.os, info.arch, cmd)
   } else {
-    return path.join(NL_PATH, 'commands', cmd)
+    return path.join(getLocalCommandDir(), cmd)
   }
 }
 
