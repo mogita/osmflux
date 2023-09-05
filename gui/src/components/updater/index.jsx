@@ -153,6 +153,13 @@ export default function Updater() {
             // restore if not match, could be network glitch or something worse
             throw new Error(`updating command ${update.localPath}, md5 for downloaded and remote file don't match.`)
           }
+          if (info.os !== 'windows') {
+            // ensure command permission on unix systems
+            const res = await os.execCommand(`chmod +x ${update.localPath}`)
+            if (res.stdErr || res.exitCode > 0) {
+              throw new Error(`chmod failed for ${update.localPath}: ` + res.stdErr)
+            }
+          }
           if (update.localMD5) {
             await filesystem.removeFile(`${update.localPath}.bak`)
           }
