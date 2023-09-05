@@ -131,14 +131,16 @@ export default function Updater() {
             info.arch
           }/${cmd}?ts=${+new Date()}`,
           remoteMD5,
-          localMD5: localCommands[cmd].md5,
+          localMD5: localCommands?.[cmd]?.md5 ? localCommands[cmd].md5 : null,
         })
       }
 
       for (const update of toUpdate) {
         try {
           // backup
-          await filesystem.moveFile(update.localPath, `${update.localPath}.bak`)
+          if (update.localPath) {
+            await filesystem.moveFile(update.localPath, `${update.localPath}.bak`)
+          }
           // download update
           const resp = await axios.get(update.remotePath, { responseType: 'arraybuffer' })
           await filesystem.writeBinaryFile(update.localPath, new Uint8Array(resp.data))
@@ -148,10 +150,14 @@ export default function Updater() {
             // restore if not match, could be network glitch or something worse
             throw new Error(`updating command ${update.localPath}, md5 for downloaded and remote file don't match.`)
           }
-          await filesystem.removeFile(`${update.localPath}.bak`)
+          if (update.localPath) {
+            await filesystem.removeFile(`${update.localPath}.bak`)
+          }
         } catch (_) {
           // revert on error
-          await filesystem.moveFile(`${update.localPath}.bak`, update.localPath)
+          if (update.localPath) {
+            await filesystem.moveFile(`${update.localPath}.bak`, update.localPath)
+          }
         }
       }
     } catch (err) {
