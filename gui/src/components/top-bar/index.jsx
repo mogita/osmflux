@@ -57,7 +57,7 @@ export default function TopBar() {
             </FormLabel>
 
             <Select variant='filled' size='sm' onChange={(evt) => router.navigate(evt.target.value)}>
-              <option value='/'>JOSM Validation Conversion</option>
+              <option value='/josm-validation-converter'>JOSM Validation Conversion</option>
               <option value='/osm-tag-filter'>OSM Tag Filter</option>
             </Select>
           </Flex>

@@ -4,10 +4,9 @@ import OsmTagFilter from './pages/osm-tag-filter'
 
 export default createBrowserRouter([
   {
-    path: '/',
+    path: '/josm-validation-converter',
     element: <JOSMValidationConverter />,
   },
-
   {
     path: '/osm-tag-filter',
     element: <OsmTagFilter />,
