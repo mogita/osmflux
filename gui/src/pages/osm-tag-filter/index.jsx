@@ -90,7 +90,7 @@ export default function OsmTagFilter() {
       await convertMapFile(pbfPath, inputIntermediate)
 
       const cmd = await getCommandPath('osmfilter')
-      const fullCmd = `${cmd} ${inputIntermediate} ${tags} ${outO5m ? '--out-o5m' : ''} > ${output}`
+      const fullCmd = `"${cmd}" ${inputIntermediate} ${tags} ${outO5m ? '--out-o5m' : ''} > ${output}`
       await os.spawnProcess(`echo '🤖 ${fullCmd}'`)
       const result = await os.execCommand(fullCmd)
       await os.spawnProcess(`echo '${result.stdOut}'`)
@@ -121,7 +121,7 @@ export default function OsmTagFilter() {
   const convertMapFile = async (input, output) => {
     try {
       const cmd = await getCommandPath('osmconvert')
-      const fullCmd = `${cmd} ${input} -o=${output}`
+      const fullCmd = `"${cmd}" ${input} -o=${output}`
       await os.spawnProcess(`echo "🤖 ${fullCmd}"`)
       const result = await os.execCommand(fullCmd)
       await os.spawnProcess(`echo "${result.stdOut}"`)
