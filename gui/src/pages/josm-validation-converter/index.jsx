@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { os } from '@neutralinojs/lib'
-import { Box, Button, Flex, Spacer, Text } from '@chakra-ui/react'
+import { Box, Button, Flex, Text } from '@chakra-ui/react'
 import { TiArrowRepeatOutline } from 'react-icons/ti'
 import { dirname, getLastOpenedDir, setLastOpenedDir } from './../../utils/fs'
 import { getCommandPath } from './../../utils/cmd'
