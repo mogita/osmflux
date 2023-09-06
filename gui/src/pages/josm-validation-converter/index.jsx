@@ -2,15 +2,17 @@ import { useState } from 'react'
 import { os } from '@neutralinojs/lib'
 import { Box, Button, Divider, Flex, Heading, Text } from '@chakra-ui/react'
 import { BsFillPlayCircleFill } from 'react-icons/bs'
-import { dirname, getLastOpenedDir, setLastOpenedDir } from './../../utils/fs'
+
+import { getLastOpenedDir, setLastOpenedDir } from './../../utils/fs'
 import { getCommandPath } from './../../utils/cmd'
+import path from '../../utils/path'
 
 export default function JOSMValidationConverter() {
   const [xmlPath, setXmlPath] = useState('')
   const [csvPath, setCSVPath] = useState('')
   const [cmdRunning, setCmdRunning] = useState(false)
 
-  const convert = async () => {
+  const start = async () => {
     if (cmdRunning) {
       return
     }
@@ -18,10 +20,10 @@ export default function JOSMValidationConverter() {
       setCmdRunning(true)
       const cmd = await getCommandPath('glancet')
       const fullCmd = `${cmd} convert-josm-validation --xml "${xmlPath}" --csv "${csvPath}"`
-      await os.spawnProcess(`echo "🤖 ${fullCmd}"`)
+      await os.spawnProcess(`echo '🤖 ${fullCmd}'`)
       const result = await os.execCommand(fullCmd)
-      await os.spawnProcess(`echo "${result.stdOut}"`)
-      await os.spawnProcess(`echo "${result.stdErr}"`)
+      await os.spawnProcess(`echo '${result.stdOut}'`)
+      await os.spawnProcess(`echo '${result.stdErr}'`)
     } catch (err) {
       console.error(err)
       os.showMessageBox('OsmFlux', err.toString(), 'OK', 'ERROR')
@@ -33,13 +35,13 @@ export default function JOSMValidationConverter() {
   const openXML = async () => {
     try {
       const entries = await os.showOpenDialog('Choose XML', {
-        defaultPath: getLastOpenedDir(),
+        defaultPath: await getLastOpenedDir(),
         multiSelections: false,
         filters: [{ name: 'XML Files', extensions: ['xml'] }],
       })
       if (Array.isArray(entries) && entries.length > 0) {
         setXmlPath(entries[0])
-        setLastOpenedDir(dirname(entries[0]))
+        setLastOpenedDir(path.dirname(entries[0]))
       }
     } catch (err) {
       console.error(err)
@@ -50,13 +52,13 @@ export default function JOSMValidationConverter() {
   const saveCSV = async () => {
     try {
       const filename = await os.showSaveDialog('Save CSV As', {
-        defaultPath: getLastOpenedDir(),
+        defaultPath: await getLastOpenedDir(),
         multiSelections: false,
         filters: [{ name: 'CSV Files', extensions: ['csv'] }],
       })
       if (filename) {
         setCSVPath(filename)
-        setLastOpenedDir(dirname(filename))
+        setLastOpenedDir(path.dirname(filename))
       }
     } catch (err) {
       console.error(err)
@@ -107,7 +109,7 @@ export default function JOSMValidationConverter() {
           colorScheme='telegram'
           size='sm'
           minW='30%'
-          onClick={convert}
+          onClick={start}
           isDisabled={!(xmlPath && csvPath)}
           isLoading={cmdRunning}
         >
