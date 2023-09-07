@@ -1,5 +1,14 @@
 * {
+  font-family: -apple-system, BlinkMacSystemFont, Ubuntu, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol';
   cursor: default !important;
   -webkit-user-select: none;
   user-select: none;
+}
+
+/* need this to fix Input on Ubuntu */
+input,
+div[contenteditable] {
+  user-select: text;
+  -webkit-user-select: text;
 }

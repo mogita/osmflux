@@ -1,6 +1,10 @@
 import { Box, Flex } from '@chakra-ui/react'
-import Router from './router.jsx'
-import TopBar from './components/top-bar/index.jsx'
+import { RouterProvider } from 'react-router-dom'
+
+import TopBar from './components/top-bar'
+import router from './router'
+
+router.navigate('/josm-validation-converter')
 
 export default function Layout() {
   return (
@@ -9,8 +13,10 @@ export default function Layout() {
         <TopBar />
       </Box>
 
-      <Box flexGrow={1}>
-        <Router />
+      <Box mb={3} />
+
+      <Box flexGrow={1} px={3}>
+        <RouterProvider router={router} />
       </Box>
     </Flex>
   )
