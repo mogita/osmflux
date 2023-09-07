@@ -5,9 +5,9 @@ export default {
     windows: { arm64: 'd3f719f78f111164801c3d5e43e03f28', x64: '0f60881c9829f6c1d4d77e5c9d47f420' },
   },
   osmfilter: {
-    linux: { arm64: '28aa380beec9bac6a76a3c330186bef7', x64: 'a7d9cc95be00ff940c9996a204be54f3' },
-    darwin: { arm64: '4abbbed183e2a3b596f4187576e1a992', x64: '1b45c516d178cb5964baf0d8eb12b702' },
-    windows: { arm64: '40c60a36b832ba9832cb320064a849b7', x64: 'e60b9a3a9f7b49de8e90b7e6eedc28c8' },
+    linux: { arm64: 'd9982b638e4efa2be28e529b6eff4fd7', x64: '1efb9de9b6bf7288e0b14cfe58f13f79' },
+    darwin: { arm64: '9674dfad4418dac687dba5c95edd93c0', x64: 'c8f2b1b078279115f4e92b478ddae5e6' },
+    windows: { arm64: '69febc05f04c410fa4571d906ba2c35e', x64: '7f6b0d424073c6c8def4d38050d139fa' },
   },
   osmconvert: {
     linux: { arm64: 'b0ff153f667996fd33685dcccfee27d3', x64: '235347d04bf3b01dc13ff24a546dbea5' },
