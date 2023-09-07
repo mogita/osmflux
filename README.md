@@ -23,9 +23,9 @@ OsmFlux provides a graphical interface for a curated range of OSM tools to help 
 
 # Roadmap
 
-- [x] JOSM Validation Conversion
-- [ ] PBF Conversion
-- [ ] PBF Manipulation
+- ☑️ JOSM Validation Conversion
+- 🚧 PBF Conversion
+- 🚧 PBF Manipulation
 
 # Supported Platforms
 
@@ -57,7 +57,8 @@ yarn release
 ├── bin             # Neutralino.js binaries, only appears after dependency installation
 ├── commands        # binaries that will be included in OsmFlux to provide certain features
 │   ├── glancet
-│   └── osmfilter
+│   ├── osmfilter
+│   └── osmconvert
 ├── dist            # The output directory of building and packaging
 │   ├── archives
 │   ├── osmflux
@@ -73,7 +74,7 @@ yarn release
 This project contains pre-compiled binaries from the following projects:
 
 - [glancet](https://gitlab.com/mogita/glancet)
-- [osmfilter](https://gitlab.com/osm-c-tools/osmctools)
+- [osmctools](https://gitlab.com/osm-c-tools/osmctools)
 
 You can read detailed credits in [CREDITS.md](CREDITS.md).
 
