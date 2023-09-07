@@ -112,6 +112,7 @@ export default function OsmTagFilter() {
       }
 
       await os.showMessageBox('OsmFlux', 'OSM Tag Filter finished', 'OK', 'INFO')
+      await tryOpenInFolder()
     } catch (err) {
       console.error(err)
       os.showMessageBox('OsmFlux', err.toString(), 'OK', 'ERROR')
@@ -196,6 +197,19 @@ export default function OsmTagFilter() {
     } catch (err) {
       console.error(err)
       os.showMessageBox('OsmFlux', err.toString(), 'OK', 'ERROR')
+    }
+  }
+
+  const tryOpenInFolder = async () => {
+    try {
+      if (!saveFilePath) {
+        return
+      }
+      if (NL_OS && NL_OS.toLowerCase() !== 'windows') {
+        await os.execCommand(`open "${saveFilePath}"`)
+      }
+    } catch (err) {
+      console.error(err)
     }
   }
 
@@ -325,7 +339,7 @@ export default function OsmTagFilter() {
           To:
         </Heading>
 
-        <Box w='300px' mr={3}>
+        <Box w='300px' mr={3} onDoubleClick={tryOpenInFolder}>
           <Text fontSize='xs'>{truncateFromMiddle(saveFilePath, 50)}</Text>
         </Box>
 
@@ -342,7 +356,7 @@ export default function OsmTagFilter() {
               {pbfPath ? '' : <br />}
               {pbfPath && !saveFileName ? 'Save As filename cannot be empty.' : ''}
               {pbfPath && !saveFileName ? <br /> : ''}
-              {tagsToKeep.length ? '' : 'Please select at least one tag to keep.'}
+              {tagsToKeep.length ? '' : 'Please select at least one tag to continue.'}
             </Text>
           }
           bg='#404040'
