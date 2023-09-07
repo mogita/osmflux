@@ -38,6 +38,10 @@ export default function OsmTagFilter() {
       return
     }
 
+    if (!saveFileName) {
+      return
+    }
+
     setCmdRunning(true)
 
     // check save file extension
@@ -288,6 +292,7 @@ export default function OsmTagFilter() {
             value={saveFileName}
             onChange={(evt) => setSaveFileName(evt.target.value)}
             isDisabled={!pbfPath || cmdRunning}
+            isInvalid={pbfPath && !saveFileName}
           />
         </Box>
 
@@ -308,9 +313,11 @@ export default function OsmTagFilter() {
         <Tooltip
           label={
             <Text color='whiteAlpha.800' fontSize='xs'>
-              {pbfPath ? '' : 'Please select a PBF file'}
+              {pbfPath ? '' : 'Please select a PBF file.'}
               {pbfPath ? '' : <br />}
-              {tagsToKeep.length ? '' : 'Please select at least one tag to keep'}
+              {pbfPath && !saveFileName ? 'Save As filename cannot be empty.' : ''}
+              {pbfPath && !saveFileName ? <br /> : ''}
+              {tagsToKeep.length ? '' : 'Please select at least one tag to keep.'}
             </Text>
           }
           bg='#404040'
@@ -318,7 +325,7 @@ export default function OsmTagFilter() {
           gutter={12}
           closeOnClick={false}
           hasArrow
-          isDisabled={pbfPath && tagsToKeep.length}
+          isDisabled={pbfPath && tagsToKeep.length && saveFileName}
         >
           <Box minW='30%'>
             <Button
@@ -327,7 +334,7 @@ export default function OsmTagFilter() {
               size='sm'
               w='100%'
               onClick={start}
-              isDisabled={!pbfPath || tagsToKeep.length === 0 || cmdRunning}
+              isDisabled={!pbfPath || tagsToKeep.length === 0 || cmdRunning || (pbfPath && !saveFileName)}
               isLoading={cmdRunning}
             >
               Start
