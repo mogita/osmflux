@@ -10,6 +10,8 @@ import {
   Heading,
   Icon,
   Input,
+  InputGroup,
+  InputRightElement,
   Stack,
   Tag,
   TagLabel,
@@ -287,21 +289,44 @@ export default function OsmTagFilter() {
         </Heading>
 
         <Box flexGrow={1} mr={5}>
-          <Input
-            size='xs'
-            value={saveFileName}
-            onChange={(evt) => setSaveFileName(evt.target.value)}
-            isDisabled={!pbfPath || cmdRunning}
-            isInvalid={pbfPath && !saveFileName}
-          />
+          <InputGroup>
+            <Input
+              size='xs'
+              value={saveFileName}
+              onChange={(evt) => setSaveFileName(evt.target.value)}
+              isDisabled={!pbfPath || cmdRunning}
+              isInvalid={pbfPath && !saveFileName}
+            />
+            <InputRightElement h='26px' mr={-1.5}>
+              <Tooltip
+                label={
+                  <Text color='whiteAlpha.800' fontSize='xs'>
+                    Supported file extensions: pbf, osm, o5m.
+                    <br />
+                    <br />
+                    Simply set a wanted file extension, OsmFlux will output to this format automatically.
+                  </Text>
+                }
+                bg='#404040'
+                placement='right'
+                gutter={12}
+                closeOnClick={false}
+                hasArrow
+              >
+                <Box>
+                  <Icon as={FaInfoCircle} />
+                </Box>
+              </Tooltip>
+            </InputRightElement>
+          </InputGroup>
         </Box>
 
         <Heading size='xs' mr={2}>
           To:
         </Heading>
 
-        <Box w='340px' mr={3}>
-          <Text fontSize='xs'>{truncateFromMiddle(saveFilePath, 54)}</Text>
+        <Box w='300px' mr={3}>
+          <Text fontSize='xs'>{truncateFromMiddle(saveFilePath, 50)}</Text>
         </Box>
 
         <Button size='xs' onClick={browse} colorScheme='telegram' isDisabled={!pbfPath || cmdRunning}>
