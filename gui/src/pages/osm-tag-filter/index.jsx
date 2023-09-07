@@ -51,6 +51,7 @@ export default function OsmTagFilter() {
         'OK',
         'ERROR',
       )
+      setCmdRunning(false)
       return
     }
 

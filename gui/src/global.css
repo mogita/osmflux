@@ -5,3 +5,10 @@
   -webkit-user-select: none;
   user-select: none;
 }
+
+/* need this to fix Input on Ubuntu */
+input,
+div[contenteditable] {
+  user-select: text;
+  -webkit-user-select: text;
+}
