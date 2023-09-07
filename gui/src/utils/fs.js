@@ -12,7 +12,9 @@ const getSafeDir = async (key, safe) => {
     }
   }
   try {
-    safeDir = await storage.getData(key)
+    const customDir = await storage.getData(key)
+    await filesystem.getStats(customDir)
+    safeDir = customDir
   } catch (_) {}
   return safeDir
 }
