@@ -28,10 +28,29 @@ export const getCommandPath = async (cmd = '') => {
     throw new Error('NL_PATH is not set')
   }
   const info = await getOSInfo()
+  if (cmd === 'osmosis') {
+    return path.join(getLocalCommandDir(), 'osmosis', 'bin', info.os === 'windows' ? 'osmosis.bat' : 'osmosis')
+  }
+  // other commands
   if (import.meta.env.DEV === true) {
+    // development environment
     return path.join(getLocalCommandDir(), cmd, info.os, info.arch, cmd)
   } else {
+    // released environment
     return path.join(getLocalCommandDir(), cmd)
+  }
+}
+
+export const checkJavaVM = async () => {
+  try {
+    const res = await os.execCommand('java -version')
+    if (res.stdErr || res.exitCode > 0) {
+      return false
+    }
+    return true
+  } catch (err) {
+    console.error(err)
+    return false
   }
 }
 
@@ -47,7 +66,7 @@ export const getLocalCommandList = async () => {
 
     const info = await getOSInfo()
     const dirs = (await filesystem.readDirectory(`${getBasePath()}/commands`))
-      .filter((e) => e.type === 'DIRECTORY' && !~['.', '..', 'dev-only'].indexOf(e.entry))
+      .filter((e) => e.type === 'DIRECTORY' && !~['.', '..', 'dev-only', 'osmosis'].indexOf(e.entry))
       .map((e) => ({ dirPath: `${getBasePath()}/commands/${e.entry}`, cmd: e.entry }))
 
     for (const dir of dirs) {

@@ -700,6 +700,29 @@ For more information on this, and how to apply and follow the GNU AGPL, see
 <http://www.gnu.org/licenses/>.
 ```
 
+### osmosis
+
+OsmFlux uses [osmosis](https://wiki.openstreetmap.org/wiki/Osmosis) (0.48.3) to process OSM data. ([License](https://github.com/openstreetmap/osmosis/blob/0.48.3/package/copying.txt)):
+
+```
+Osmosis consists of all files in this archive with the exception of the
+third party libraries in the lib sub-directory, and the osmosis-osm-binary
+library which is a re-packaged version of a third-party library.
+
+Osmosis is placed into the public domain and where this is not legally
+possible everybody is granted a perpetual, irrevocable license to use
+this work for any purpose whatsoever.
+
+DISCLAIMERS
+By making Osmosis publicly available, it is hoped that users will find the
+software useful.  However:
+* Osmosis comes without any warranty, to the extent permitted by applicable
+law.
+* Unless required by applicable law, no liability will be accepted by
+the authors and distributors of this software for any damages caused
+as a result of its use.
+```
+
 ## Runtime Libraries
 
 ### Neutralino.js
