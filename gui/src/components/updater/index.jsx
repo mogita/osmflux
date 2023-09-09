@@ -4,7 +4,7 @@ import { filesystem, os, storage, updater, app } from '@neutralinojs/lib'
 import { Button } from '@chakra-ui/react'
 import dayjs from 'dayjs'
 
-import { getLocalCommandDir, getLocalCommandList, getOSInfo } from '../../utils/cmd'
+import { getCommandPath, getLocalCommandDir, getLocalCommandList, getOSInfo, getOsmosis } from '../../utils/cmd'
 import { getFileMD5 } from '../../utils/fs'
 import path from '../../utils/path'
 
@@ -77,6 +77,13 @@ export default function Updater() {
       const manifest = await updater.checkForUpdates(url)
 
       await updateCommands(manifest?.data?.commands)
+
+      const osmosis = await getCommandPath('osmosis')
+      try {
+        await filesystem.getStats(osmosis)
+      } catch (_) {
+        await getOsmosis()
+      }
 
       if (manifest.version != NL_APPVERSION) {
         const choice = await os.showMessageBox(

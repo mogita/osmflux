@@ -1,5 +1,8 @@
 import { filesystem, storage, os } from '@neutralinojs/lib'
+import JSZip from 'jszip'
 import md5 from 'md5'
+import path from './path'
+import { getLocalCommandDir } from './cmd'
 
 const getSafeDir = async (key, safe) => {
   let safeDir = safe
@@ -8,7 +11,7 @@ const getSafeDir = async (key, safe) => {
       safeDir = await os.getPath('documents')
     } catch (err) {
       console.error(err)
-      safeDir = NL_OS?.toLowerCase() === 'windows' ? 'C:\\' : '/'
+      safeDir = (NL_OS || '').toLowerCase() === 'windows' ? 'C:\\' : '/'
     }
   }
   try {
@@ -40,6 +43,18 @@ export const getBasePath = () => {
   return import.meta.env.PROD === true ? NL_PATH : NL_CWD
 }
 
+export const mkdirP = async (dirpath) => {
+  try {
+    if ((NL_OS || '').toLowerCase() === 'windows') {
+      return os.execCommand(`mkdir ${dirpath}`)
+    } else {
+      return os.execCommand(`mkdir -p ${dirpath}`)
+    }
+  } catch (err) {
+    throw err
+  }
+}
+
 export const getFileMD5 = async (filepath) => {
   try {
     const data = await filesystem.readBinaryFile(filepath)
@@ -48,3 +63,41 @@ export const getFileMD5 = async (filepath) => {
     throw err
   }
 }
+
+export const unzip = async (zipfile, targetDir) => {
+  try {
+    const zip = new JSZip()
+    const data = await filesystem.readBinaryFile(zipfile)
+    const files = await zip.loadAsync(new Uint8Array(data))
+
+    await mkdirP(targetDir)
+
+    let error = null
+
+    files.forEach(async (relPath, file) => {
+      if (error) {
+        return
+      }
+      try {
+        const fullpath = path.join(targetDir, relPath)
+        const info = path.parse(fullpath)
+        await mkdirP(info.dir)
+        if (!info.isDir) {
+          const content = await file.async('uint8array')
+          await filesystem.writeBinaryFile(fullpath, content)
+        }
+      } catch (err) {
+        error = err
+      }
+    })
+
+    if (error) {
+      throw err
+    }
+  } catch (err) {
+    // throw err
+    console.error(err)
+  }
+}
+
+// unzip(path.join(NL_PATH, 'commands', 'osmosis.zip'), path.join(NL_PATH, 'commands', 'osmosis-test'))

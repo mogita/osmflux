@@ -1,6 +1,8 @@
 import { computer, filesystem, os } from '@neutralinojs/lib'
 import path from './../utils/path'
-import { getBasePath } from './fs'
+import { getBasePath, unzip } from './fs'
+import { sleep } from './sleep'
+import axios from 'axios'
 
 // getOSInfo returns standardized lower case os and arch names
 // possible "os": linux, darwin, windows
@@ -21,6 +23,37 @@ export const getLocalCommandDir = () => {
     throw new Error('NL_PATH is not set')
   }
   return path.join(NL_PATH, 'commands')
+}
+
+export const getOsmosis = async () => {
+  try {
+    const channel = NL_RELEASE_INFO?.channel === 'dev' || import.meta.env.DEV === true ? 'dev' : 'stable'
+    const url = `https://static.mogita.com/osmflux/releases/${channel}/latest/commands/osmosis.zip?ts=${+new Date()}`
+    const resp = await axios.get(url, { responseType: 'arraybuffer' })
+
+    const zipPath = path.join(getLocalCommandDir(), 'osmosis.zip')
+    try {
+      await filesystem.removeDirectory(zipPath)
+    } catch (_) {}
+
+    await filesystem.writeBinaryFile(zipPath, new Uint8Array(resp.data))
+    const targetDir = path.join(getLocalCommandDir(), 'osmosis')
+    await unzip(zipPath, targetDir)
+
+    // fix executing permissions on unix
+    if ((NL_OS || '').toLowerCase() !== 'windows') {
+      await sleep(2000)
+      await os.execCommand(`chmod +x ${targetDir}/bin/osmosis`)
+      await os.execCommand(`chmod +x ${targetDir}/bin/osmosis-extract-apidb-0.6`)
+      await os.execCommand(`chmod +x ${targetDir}/bin/osmosis-extract-mysql-0.6`)
+      await os.execCommand(`chmod +x ${targetDir}/script/contrib/dump_apidb.sh`)
+      await os.execCommand(`chmod +x ${targetDir}/script/contrib/replicate_osm_file.sh`)
+      await os.execCommand(`chmod +x ${targetDir}/script/fix_line_endings.sh`)
+      await os.execCommand(`chmod +x ${targetDir}/script/munin/osm_replication_lag`)
+    }
+  } catch (err) {
+    throw err
+  }
 }
 
 export const getCommandPath = async (cmd = '') => {

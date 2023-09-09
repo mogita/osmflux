@@ -23,6 +23,7 @@ export const parse = (filepath) => {
     return {
       basename: sep,
       dir: sep,
+      isDir: true,
       filename: sep,
       ext: '',
     }
@@ -32,7 +33,9 @@ export const parse = (filepath) => {
   const reg = new RegExp(consecutive, 'g')
   filepath = filepath.replace(reg, sep)
 
+  let isDir = false
   if (filepath[filepath.length - 1] === sep) {
+    isDir = true
     filepath = filepath.substring(0, filepath.length - 1)
   }
 
@@ -49,6 +52,7 @@ export const parse = (filepath) => {
   return {
     basename,
     dir,
+    isDir,
     filename,
     ext,
   }
