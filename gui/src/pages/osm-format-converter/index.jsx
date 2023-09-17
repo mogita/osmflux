@@ -21,7 +21,7 @@ import { FaInfoCircle } from 'react-icons/fa'
 import { TiWarning } from 'react-icons/ti'
 
 import { truncateFromMiddle } from '../../utils/string'
-import { checkJavaVM, getCommandPath } from '../../utils/cmd'
+import { checkJavaVM, getCommandPath, getOsmosis } from '../../utils/cmd'
 import path from '../../utils/path'
 import { getLastOpenedDir, getLastSavedDir, setLastOpenedDir, setLastSavedDir } from '../../utils/fs'
 
@@ -33,6 +33,17 @@ export default function OsmFormatConverter() {
 
   const [cmdRunning, setCmdRunning] = useState(false)
   const [javaVMReady, setJavaVMReady] = useState(true)
+
+  useEffect(() => {
+    ;(async function () {
+      const osmosis = await getCommandPath('osmosis')
+      try {
+        await filesystem.getStats(osmosis)
+      } catch (_) {
+        await getOsmosis()
+      }
+    })()
+  }, [])
 
   useEffect(() => {
     checkJavaVM()
