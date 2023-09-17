@@ -134,16 +134,15 @@ export default function OsmFormatConverter() {
       const fullCmd = `"${cmd}" --read-${from} ${fromFilePath} --write-${to} ${toFilePath}`
       await os.spawnProcess(`echo "🤖 ${fullCmd}"`)
       const result = await os.execCommand(fullCmd)
-      await os.spawnProcess(`echo "${result.stdOut}"`)
-      if (result.exitCode > 0) {
-        throw new Error('An error occured. See "Activity" for details.')
-      }
       if (result.stdOut) {
         await os.spawnProcess(`echo "${result.stdOut}"`)
       }
       // java might output normal logs to the stdErr while keeping silent in stdOut
       if (result.stdErr) {
         await os.spawnProcess(`echo "${result.stdErr}"`)
+      }
+      if (result.exitCode > 0) {
+        throw new Error('An error occured. See "Activity" for details.')
       }
     } catch (err) {
       throw err

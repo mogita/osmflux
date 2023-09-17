@@ -38,7 +38,7 @@ export default function JOSMValidationConverter() {
     }
 
     // check save file extension
-    // supported: pbf, osm, o5m
+    // supported: csv
     const { ext } = path.parse(saveFileName)
     if (!~['csv'].indexOf(ext)) {
       await os.showMessageBox(
@@ -84,6 +84,11 @@ export default function JOSMValidationConverter() {
       if (result.stdErr) {
         await os.spawnProcess(`echo '${result.stdErr}'`)
       }
+      if (result.exitCode > 0) {
+        throw new Error('An error occured. See "Activity" for details.')
+      }
+      await os.showMessageBox('OsmFlux', 'JOSM validation conversion finished', 'OK', 'INFO')
+      await tryOpenInFolder()
     } catch (err) {
       console.error(err)
       os.showMessageBox('OsmFlux', err.toString(), 'OK', 'ERROR')
