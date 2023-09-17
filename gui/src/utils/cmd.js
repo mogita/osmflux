@@ -43,13 +43,13 @@ export const getOsmosis = async () => {
     // fix executing permissions on unix
     if ((NL_OS || '').toLowerCase() !== 'windows') {
       await sleep(2000)
-      await os.execCommand(`chmod +x ${targetDir}/bin/osmosis`)
-      await os.execCommand(`chmod +x ${targetDir}/bin/osmosis-extract-apidb-0.6`)
-      await os.execCommand(`chmod +x ${targetDir}/bin/osmosis-extract-mysql-0.6`)
-      await os.execCommand(`chmod +x ${targetDir}/script/contrib/dump_apidb.sh`)
-      await os.execCommand(`chmod +x ${targetDir}/script/contrib/replicate_osm_file.sh`)
-      await os.execCommand(`chmod +x ${targetDir}/script/fix_line_endings.sh`)
-      await os.execCommand(`chmod +x ${targetDir}/script/munin/osm_replication_lag`)
+      await os.execCommand(`chmod +x "${targetDir}/bin/osmosis"`)
+      await os.execCommand(`chmod +x "${targetDir}/bin/osmosis-extract-apidb-0.6"`)
+      await os.execCommand(`chmod +x "${targetDir}/bin/osmosis-extract-mysql-0.6"`)
+      await os.execCommand(`chmod +x "${targetDir}/script/contrib/dump_apidb.sh"`)
+      await os.execCommand(`chmod +x "${targetDir}/script/contrib/replicate_osm_file.sh"`)
+      await os.execCommand(`chmod +x "${targetDir}/script/fix_line_endings.sh"`)
+      await os.execCommand(`chmod +x "${targetDir}/script/munin/osm_replication_lag"`)
     }
   } catch (err) {
     throw err

@@ -46,9 +46,9 @@ export const getBasePath = () => {
 export const mkdirP = async (dirpath) => {
   try {
     if ((NL_OS || '').toLowerCase() === 'windows') {
-      return os.execCommand(`mkdir ${dirpath}`)
+      return os.execCommand(`mkdir "${dirpath}"`)
     } else {
-      return os.execCommand(`mkdir -p ${dirpath}`)
+      return os.execCommand(`mkdir -p "${dirpath}"`)
     }
   } catch (err) {
     throw err
@@ -95,8 +95,7 @@ export const unzip = async (zipfile, targetDir) => {
       throw err
     }
   } catch (err) {
-    // throw err
-    console.error(err)
+    throw err
   }
 }
 
