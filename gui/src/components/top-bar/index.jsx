@@ -52,7 +52,7 @@ export default function TopBar() {
           <Flex alignItems='center' border='1px solid #4d4d4d' borderRadius={5}>
             <FormLabel m={0} mb={1}>
               <Text fontSize='sm' fontWeight='bold' display='inline' mx={3}>
-                Browser
+                Recipes
               </Text>
             </FormLabel>
 
