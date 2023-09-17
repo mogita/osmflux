@@ -52,13 +52,14 @@ export default function TopBar() {
           <Flex alignItems='center' border='1px solid #4d4d4d' borderRadius={5}>
             <FormLabel m={0} mb={1}>
               <Text fontSize='sm' fontWeight='bold' display='inline' mx={3}>
-                Browser
+                Recipes
               </Text>
             </FormLabel>
 
             <Select variant='filled' size='sm' onChange={(evt) => router.navigate(evt.target.value)}>
               <option value='/josm-validation-converter'>JOSM Validation Conversion</option>
               <option value='/osm-tag-filter'>OSM Tag Filter</option>
+              <option value='/osm-format-converter'>OSM Format Conversion</option>
             </Select>
           </Flex>
         </FormControl>

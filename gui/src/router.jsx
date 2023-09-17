@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import JOSMValidationConverter from './pages/josm-validation-converter'
 import OsmTagFilter from './pages/osm-tag-filter'
+import OsmFormatConverter from './pages/osm-format-converter'
 
 export default createBrowserRouter([
   {
@@ -10,5 +11,9 @@ export default createBrowserRouter([
   {
     path: '/osm-tag-filter',
     element: <OsmTagFilter />,
+  },
+  {
+    path: '/osm-format-converter',
+    element: <OsmFormatConverter />,
   },
 ])
