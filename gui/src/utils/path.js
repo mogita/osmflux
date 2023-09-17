@@ -58,6 +58,16 @@ export const parse = (filepath) => {
   }
 }
 
+export const parseAsOsm = (filepath) => {
+  const parsed = parse(filepath)
+  const ret = { ...parsed, osmBareName: '' }
+  const split = parsed.filename.split('.')
+  if (split[split.length - 1] === 'osm') {
+    ret.osmBareName = split.slice(0, split.length - 1).join()
+  }
+  return ret
+}
+
 // console.log(parse('C:\\Windows\\some path\\foo bar.txt'))
 // console.log(parse('C:\\Windows\\some path\\foo bar.txt'))
 // console.log(parse('/Users/windows/some path/foo.bar.txt'))
@@ -68,4 +78,5 @@ export default {
   join,
   dirname,
   parse,
+  parseAsOsm,
 }

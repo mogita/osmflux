@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { os } from '@neutralinojs/lib'
+import { filesystem, os } from '@neutralinojs/lib'
 import {
   Alert,
   Box,
@@ -21,7 +21,9 @@ import { FaInfoCircle } from 'react-icons/fa'
 import { TiWarning } from 'react-icons/ti'
 
 import { truncateFromMiddle } from '../../utils/string'
-import { checkJavaVM } from '../../utils/cmd'
+import { checkJavaVM, getCommandPath } from '../../utils/cmd'
+import path from '../../utils/path'
+import { getLastOpenedDir, getLastSavedDir, setLastOpenedDir, setLastSavedDir } from '../../utils/fs'
 
 export default function OsmFormatConverter() {
   const [inputPath, setInputPath] = useState('')
@@ -33,7 +35,12 @@ export default function OsmFormatConverter() {
   const [javaVMReady, setJavaVMReady] = useState(true)
 
   useEffect(() => {
-    checkJavaVM().then(setJavaVMReady).catch(console.error)
+    checkJavaVM()
+      .then(setJavaVMReady)
+      .catch((err) => {
+        console.error(err)
+        os.showMessageBox('OsmFlux', 'Error checking for Java VM (JRE):\n\n' + err.toString(), 'OK', 'ERROR')
+      })
   }, [])
 
   const openLink = (link) => {
@@ -52,9 +59,121 @@ export default function OsmFormatConverter() {
     }
   }
 
-  const start = () => {}
+  const start = async () => {
+    if (cmdRunning) {
+      return
+    }
 
-  const open = () => {}
+    if (!saveFileName) {
+      return
+    }
+
+    // check save file extension
+    // supported: pbf, osm, o5m
+    const { ext } = path.parse(saveFileName)
+    if (!~['pbf', 'osm'].indexOf(ext)) {
+      await os.showMessageBox(
+        'OsmFlux',
+        `Saving to an unsupported file type ".${ext}"\n\nSupported extensions: .pbf .osm`,
+        'OK',
+        'ERROR',
+      )
+      return
+    }
+
+    // check if output file already exists
+    try {
+      await filesystem.getStats(path.join(saveFilePath, saveFileName))
+      const choice = await os.showMessageBox(
+        'OsmFlux',
+        `Target file already exists, do you want to overwrite it?`,
+        'YES_NO',
+        'WARNING',
+      )
+      if (choice !== 'YES') {
+        return
+      }
+    } catch (err) {
+      if (err.code !== 'NE_FS_NOPATHE') {
+        os.showMessageBox('OsmFlux', err.toString(), 'OK', 'ERROR')
+        return
+      }
+    }
+
+    try {
+      setCmdRunning(true)
+      // detect from format
+      let from = 'xml'
+      if (path.parse(inputPath).ext === 'pbf') {
+        from = 'pbf'
+      }
+      // detect to format
+      let to = 'pbf'
+      if (path.parse(saveFileName).ext === 'osm') {
+        to = 'xml'
+      }
+      if (from === to) {
+        throw new Error('Source and target format should not be the same')
+      }
+
+      await convert(from, to, inputPath, path.join(saveFilePath, saveFileName))
+
+      await os.showMessageBox('OsmFlux', 'OSM format conversion finished', 'OK', 'INFO')
+      await tryOpenInFolder()
+    } catch (err) {
+      console.error(err)
+      os.showMessageBox('OsmFlux', err.toString(), 'OK', 'ERROR')
+    } finally {
+      setCmdRunning(false)
+    }
+  }
+
+  const convert = async (from, to, fromFilePath, toFilePath) => {
+    try {
+      const cmd = await getCommandPath('osmosis')
+      const fullCmd = `"${cmd}" --read-${from} ${fromFilePath} --write-${to} ${toFilePath}`
+      await os.spawnProcess(`echo "🤖 ${fullCmd}"`)
+      const result = await os.execCommand(fullCmd)
+      await os.spawnProcess(`echo "${result.stdOut}"`)
+      if (result.exitCode > 0) {
+        throw new Error('An error occured. See "Activity" for details.')
+      }
+      if (result.stdOut) {
+        await os.spawnProcess(`echo "${result.stdOut}"`)
+      }
+      // java might output normal logs to the stdErr while keeping silent in stdOut
+      if (result.stdErr) {
+        await os.spawnProcess(`echo "${result.stdErr}"`)
+      }
+    } catch (err) {
+      throw err
+    }
+  }
+
+  const open = async () => {
+    try {
+      const entries = await os.showOpenDialog('Choose File', {
+        defaultPath: await getLastOpenedDir(),
+        multiSelections: false,
+        filters: [
+          { name: 'PBF Files', extensions: ['pbf'] },
+          { name: 'XML Files', extensions: ['osm'] },
+        ],
+      })
+      if (Array.isArray(entries) && entries.length > 0) {
+        setInputPath(entries[0])
+        setLastOpenedDir(path.dirname(entries[0]))
+        // as in the map file conversion scenario, a map file is more probably used, so try with the osm standard filename first
+        const info = path.parseAsOsm(entries[0])
+        const saveDir = await getLastSavedDir()
+        setSaveFilePath(saveDir)
+        setSaveFileName(`${info.osmBareName ? info.osmBareName : info.basename}.${info.ext === 'pbf' ? 'osm' : 'pbf'}`)
+      }
+    } catch (err) {
+      console.error(err)
+      os.showMessageBox('OsmFlux', err.toString(), 'OK', 'ERROR')
+    }
+  }
 
   const browse = async () => {
     try {
@@ -222,7 +341,7 @@ export default function OsmFormatConverter() {
           hasArrow
           isDisabled={inputPath && saveFileName}
         >
-          <Box minW='30%'>
+          <Box w='223px'>
             <Button
               leftIcon={<BsFillPlayCircleFill />}
               colorScheme='telegram'
