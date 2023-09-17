@@ -77,7 +77,9 @@ export const getCommandPath = async (cmd = '') => {
 export const checkJavaVM = async () => {
   try {
     const res = await os.execCommand('java -version')
-    if (res.stdErr || res.exitCode > 0) {
+    // NOTE: `java -version` might output to stdErr for the version info, although the exit code is 0.
+    // So only exit code is tested here.
+    if (res.exitCode > 0) {
       return false
     }
     return true
