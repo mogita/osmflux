@@ -130,6 +130,16 @@ const buildLinuxPackage = async () => {
     )
   }
 
+  // copy osmosis
+  fs.copySync(
+    getPath('commands', 'osmosis'),
+    getPath('dist', 'packages', 'linux', `${appName}-arm64`, 'commands', 'osmosis'),
+  )
+  fs.copySync(
+    getPath('commands', 'osmosis'),
+    getPath('dist', 'packages', 'linux', `${appName}-x64`, 'commands', 'osmosis'),
+  )
+
   console.log('[linux] packaging completed')
 }
 
@@ -165,6 +175,12 @@ const buildWindowsPackage = async () => {
       getPath('dist', 'packages', 'windows', `${appName}-x64`, 'commands', `${cmd}.exe`),
     )
   }
+
+  // copy osmosis
+  fs.copySync(
+    getPath('commands', 'osmosis'),
+    getPath('dist', 'packages', 'windows', `${appName}-x64`, 'commands', 'osmosis'),
+  )
 
   console.log('[windows] packaging completed')
 }
@@ -221,6 +237,16 @@ const buildMacOSPackage = async () => {
       getPath('dist', 'packages', 'darwin', `${appName}-x64.app`, 'Contents', 'Resources', 'commands', cmd),
     )
   }
+
+  // copy osmosis
+  fs.copySync(
+    getPath('commands', 'osmosis'),
+    getPath('dist', 'packages', 'darwin', `${appName}-arm64.app`, 'Contents', 'Resources', 'commands', 'osmosis'),
+  )
+  fs.copySync(
+    getPath('commands', 'osmosis'),
+    getPath('dist', 'packages', 'darwin', `${appName}-x64.app`, 'Contents', 'Resources', 'commands', 'osmosis'),
+  )
 
   console.log('[darwin] copying the icon...')
   fs.copySync(

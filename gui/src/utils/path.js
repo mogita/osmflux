@@ -23,6 +23,7 @@ export const parse = (filepath) => {
     return {
       basename: sep,
       dir: sep,
+      isDir: true,
       filename: sep,
       ext: '',
     }
@@ -32,7 +33,9 @@ export const parse = (filepath) => {
   const reg = new RegExp(consecutive, 'g')
   filepath = filepath.replace(reg, sep)
 
+  let isDir = false
   if (filepath[filepath.length - 1] === sep) {
+    isDir = true
     filepath = filepath.substring(0, filepath.length - 1)
   }
 
@@ -49,9 +52,20 @@ export const parse = (filepath) => {
   return {
     basename,
     dir,
+    isDir,
     filename,
     ext,
   }
+}
+
+export const parseAsOsm = (filepath) => {
+  const parsed = parse(filepath)
+  const ret = { ...parsed, osmBareName: '' }
+  const split = parsed.filename.split('.')
+  if (split[split.length - 1] === 'osm') {
+    ret.osmBareName = split.slice(0, split.length - 1).join()
+  }
+  return ret
 }
 
 // console.log(parse('C:\\Windows\\some path\\foo bar.txt'))
@@ -64,4 +78,5 @@ export default {
   join,
   dirname,
   parse,
+  parseAsOsm,
 }
