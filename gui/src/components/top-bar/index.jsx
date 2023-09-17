@@ -59,7 +59,7 @@ export default function TopBar() {
             <Select variant='filled' size='sm' onChange={(evt) => router.navigate(evt.target.value)}>
               <option value='/josm-validation-converter'>JOSM Validation Conversion</option>
               <option value='/osm-tag-filter'>OSM Tag Filter</option>
-              <option value='/osm-format-converter'>OSM Format Converter</option>
+              <option value='/osm-format-converter'>OSM Format Conversion</option>
             </Select>
           </Flex>
         </FormControl>
