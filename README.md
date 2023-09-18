@@ -24,7 +24,7 @@ OsmFlux provides a graphical interface for a curated range of OSM tools to help 
 # Roadmap
 
 - ☑️ JOSM Validation Conversion
-- 🚧 PBF Conversion
+- ☑️ PBF Conversion
 - 🚧 PBF Manipulation
 
 # Supported Platforms
@@ -58,7 +58,8 @@ yarn release
 ├── commands        # binaries that will be included in OsmFlux to provide certain features
 │   ├── glancet
 │   ├── osmfilter
-│   └── osmconvert
+│   ├── osmconvert
+│   └── osmosis
 ├── dist            # The output directory of building and packaging
 │   ├── archives
 │   ├── osmflux
@@ -75,6 +76,7 @@ This project contains pre-compiled binaries from the following projects:
 
 - [glancet](https://gitlab.com/mogita/glancet)
 - [osmctools](https://gitlab.com/osm-c-tools/osmctools)
+- [osmosis](https://github.com/openstreetmap/osmosis)
 
 You can read detailed credits in [CREDITS.md](CREDITS.md).
 
