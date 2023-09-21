@@ -97,12 +97,16 @@ export default function OsmTagFilter() {
       await convertMapFile(pbfPath, inputIntermediate)
 
       const cmd = await getCommandPath('osmfilter')
-      const fullCmd = `"${cmd}" ${inputIntermediate} ${tags} ${outO5m ? '--out-o5m' : ''} > ${output}`
+      const fullCmd = `"${cmd}" ${inputIntermediate} ${tags} ${outO5m ? '--out-o5m' : ''} -o=${output}`
       await os.spawnProcess(`echo '🤖 ${fullCmd}'`)
       const result = await os.execCommand(fullCmd)
-      await os.spawnProcess(`echo '${result.stdOut}'`)
+      if (result.stdOut) {
+        await os.spawnProcess(`echo '${result.stdOut}'`)
+      }
       if (result.stdErr) {
         await os.spawnProcess(`echo '${result.stdErr}'`)
+      }
+      if (result.exitCode > 0) {
         throw new Error('An error occured. See "Activity" for details.')
       }
 
