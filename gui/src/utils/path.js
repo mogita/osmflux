@@ -63,7 +63,7 @@ export const parseAsOsm = (filepath) => {
   const ret = { ...parsed, osmBareName: '' }
   const split = parsed.filename.split('.')
   if (split[split.length - 1] === 'osm') {
-    ret.osmBareName = split.slice(0, split.length - 1).join()
+    ret.osmBareName = split.slice(0, split.length - 1).join('.')
   }
   return ret
 }
