@@ -227,10 +227,10 @@ export default function OsmTagFilter() {
       <Flex w='100%' mb={4} justifyContent='center' alignItems='center' alignContent='center'>
         <Box w='100%'>
           <Heading size='xs' mb={2}>
-            Source PBF
+            Source Map File
           </Heading>
           <Button onClick={openPBF} size='xs' colorScheme='telegram'>
-            Open PBF...
+            Open Map File...
           </Button>
           <Text mt={1} color='#666565' fontSize='sm'>
             {pbfPath || 'Please choose a PBF file'}

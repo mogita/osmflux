@@ -60,6 +60,7 @@ export default function TopBar() {
               <option value='/josm-validation-converter'>JOSM Validation Conversion</option>
               <option value='/osm-tag-filter'>OSM Tag Filter</option>
               <option value='/osm-format-converter'>OSM Format Conversion</option>
+              <option value='/osm-clipper'>OSM Clipper</option>
             </Select>
           </Flex>
         </FormControl>
