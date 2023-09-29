@@ -24,9 +24,9 @@
     "window": {
       "title": "OsmFlux",
       "width": 800,
-      "height": 520,
+      "height": 540,
       "minWidth": 800,
-      "minHeight": 520,
+      "minHeight": 540,
       "fullScreen": false,
       "alwaysOnTop": false,
       "icon": "/gui/public/osmflux-dev.png",

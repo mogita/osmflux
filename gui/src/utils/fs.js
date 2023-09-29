@@ -2,7 +2,6 @@ import { filesystem, storage, os } from '@neutralinojs/lib'
 import JSZip from 'jszip'
 import md5 from 'md5'
 import path from './path'
-import { getLocalCommandDir } from './cmd'
 
 const getSafeDir = async (key, safe) => {
   let safeDir = safe
