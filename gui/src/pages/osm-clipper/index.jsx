@@ -20,6 +20,7 @@ import {
   TagLabel,
   Text,
   Tooltip,
+  useColorModeValue,
 } from '@chakra-ui/react'
 import dayjs from 'dayjs'
 import duration from 'dayjs/plugin/duration'
@@ -188,12 +189,12 @@ export default function OsmClipper() {
   const clip = async (from, to, fromFilePath, toFilePath, shapeFile) => {
     try {
       const cmd = await getCommandPath('osmosis')
-      const fullCmd = `"${cmd}" --read-${from} ${fromFilePath} --bounding-polygon file=${shapeFile} clipIncompleteEntities=${
+      const fullCmd = `"${cmd}" --read-${from} "${fromFilePath}" --bounding-polygon file="${shapeFile}" clipIncompleteEntities=${
         clipIncompleteEntities ? 'true' : 'false'
       } completeWays=${completeWays ? 'yes' : 'no'} completeRelations=${
         completeRelations ? 'yes' : 'no'
-      } cascadingRelations=${cascadingRelations ? 'yes' : 'no'} --write-${to} ${toFilePath}`
-      await os.spawnProcess(`echo "🤖 ${fullCmd}"`)
+      } cascadingRelations=${cascadingRelations ? 'yes' : 'no'} --write-${to} "${toFilePath}"`
+      await os.spawnProcess(`echo "► ${fullCmd}"`)
       const result = await os.execCommand(fullCmd)
       if (result.stdOut) {
         await os.spawnProcess(`echo "${result.stdOut}"`)
@@ -298,6 +299,10 @@ export default function OsmClipper() {
     }
   }
 
+  const countDownColor = useColorModeValue('blackAlpha.800', 'whiteAlpha.800')
+  const tooltipColor = useColorModeValue('blackAlpha.700', 'whiteAlpha.800')
+  const tooltipBgColor = useColorModeValue('#e9e9e9', '#404040')
+
   return (
     <Flex direction='column' justifyContent='space-between' h='100%' w='100%'>
       <Flex w='100%' mb={4} justifyContent='center' alignItems='center' alignContent='center'>
@@ -353,7 +358,7 @@ export default function OsmClipper() {
                 <Text>Clip Incomplete Entities</Text>
                 <Tooltip
                   label={
-                    <Text color='whiteAlpha.800' fontSize='xs'>
+                    <Text fontSize='xs'>
                       Specifies what the behaviour should be when entities are encountered that have missing
                       relationships with other entities. For example, ways with missing nodes, and relations with
                       missing members. This occurs most often at the boundaries of selection areas, but may also occur
@@ -365,11 +370,9 @@ export default function OsmClipper() {
                       Default: on
                     </Text>
                   }
-                  bg='#404040'
                   placement='right'
                   gutter={12}
                   closeOnClick={false}
-                  hasArrow
                 >
                   <Box pt={1} ml={2}>
                     <Icon as={FaInfoCircle} />
@@ -382,7 +385,7 @@ export default function OsmClipper() {
                 <Text>Complete Ways</Text>
                 <Tooltip
                   label={
-                    <Text color='whiteAlpha.800' fontSize='xs'>
+                    <Text fontSize='xs'>
                       Include all available nodes for ways which have at least one node in the shape boundaries.
                       Supersedes "Cascading Relations".
                       <br />
@@ -390,11 +393,9 @@ export default function OsmClipper() {
                       Default: off
                     </Text>
                   }
-                  bg='#404040'
                   placement='right'
                   gutter={12}
                   closeOnClick={false}
-                  hasArrow
                 >
                   <Box pt={1} ml={2}>
                     <Icon as={FaInfoCircle} />
@@ -407,7 +408,7 @@ export default function OsmClipper() {
                 <Text>Complete Relations</Text>
                 <Tooltip
                   label={
-                    <Text color='whiteAlpha.800' fontSize='xs'>
+                    <Text fontSize='xs'>
                       Include all available relations which are members of relations which have at least one member in
                       the shape boundaries. Implies "Complete Ways". Supersedes "Cascading Relations".
                       <br />
@@ -415,11 +416,9 @@ export default function OsmClipper() {
                       Default: off
                     </Text>
                   }
-                  bg='#404040'
                   placement='right'
                   gutter={12}
                   closeOnClick={false}
-                  hasArrow
                 >
                   <Box pt={1} ml={2}>
                     <Icon as={FaInfoCircle} />
@@ -436,7 +435,7 @@ export default function OsmClipper() {
                 <Text>Cascading Realtions</Text>
                 <Tooltip
                   label={
-                    <Text color='whiteAlpha.800' fontSize='xs'>
+                    <Text fontSize='xs'>
                       If a relation is selected for inclusion, always include all its parents as well. Without this
                       flag, whether or not the parent of an included relation is included can depend on the order in
                       which they appear - if the parent relation is processed but at the time it is not known that it
@@ -453,11 +452,9 @@ export default function OsmClipper() {
                       Default: off
                     </Text>
                   }
-                  bg='#404040'
                   placement='right'
                   gutter={12}
                   closeOnClick={false}
-                  hasArrow
                 >
                   <Box pt={1} ml={2}>
                     <Icon as={FaInfoCircle} />
@@ -488,18 +485,16 @@ export default function OsmClipper() {
             <InputRightElement h='26px' mr={-1.5}>
               <Tooltip
                 label={
-                  <Text color='whiteAlpha.800' fontSize='xs'>
+                  <Text fontSize='xs'>
                     Supported file extensions: pbf, osm.
                     <br />
                     <br />
                     Simply set a wanted file extension, OsmFlux will output to this format automatically.
                   </Text>
                 }
-                bg='#404040'
                 placement='right'
                 gutter={12}
                 closeOnClick={false}
-                hasArrow
               >
                 <Box>
                   <Icon as={FaInfoCircle} />
@@ -562,7 +557,7 @@ export default function OsmClipper() {
       <Collapse in={cmdElapsedSecs}>
         <Flex alignItems='center' justifyContent='center'>
           <Box>
-            <Text textAlign='center' color='whiteAlpha.800' fontSize='xs'>
+            <Text textAlign='center' color={countDownColor} fontSize='xs'>
               Elapsed Time:{' '}
               {dayjs
                 .duration(cmdElapsedSecs, 'seconds')
@@ -570,7 +565,7 @@ export default function OsmClipper() {
               {cmdElapsedSecs < 60 ? ' seconds' : ''}
             </Text>
             <Collapse in={cmdElapsedSecs > 30}>
-              <Text textAlign='center' color='whiteAlpha.800' fontSize='xs'>
+              <Text textAlign='center' color={countDownColor} fontSize='xs'>
                 Larger maps might take significantly longer to process
               </Text>
             </Collapse>
@@ -581,7 +576,7 @@ export default function OsmClipper() {
       <Flex p={4} alignItems='center' justifyContent='center'>
         <Tooltip
           label={
-            <Text color='whiteAlpha.800' fontSize='xs'>
+            <Text fontSize='xs'>
               {inputPath ? '' : 'Please select an OSM map file.'}
               {inputPath ? '' : <br />}
               {inputPath && !saveFileName ? 'Save As filename cannot be empty.' : ''}
@@ -592,11 +587,9 @@ export default function OsmClipper() {
               {!javaVMReady ? <br /> : ''}
             </Text>
           }
-          bg='#404040'
           placement='top'
           gutter={12}
           closeOnClick={false}
-          hasArrow
           isDisabled={inputPath && saveFileName && shapeFilePath && javaVMReady}
         >
           <Box w='223px'>

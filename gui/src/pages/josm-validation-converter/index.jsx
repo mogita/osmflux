@@ -76,7 +76,7 @@ export default function JOSMValidationConverter() {
         saveFilePath,
         saveFileName,
       )}"`
-      await os.spawnProcess(`echo '🤖 ${fullCmd}'`)
+      await os.spawnProcess(`echo '► ${fullCmd}'`)
       const result = await os.execCommand(fullCmd)
       if (result.stdOut) {
         await os.spawnProcess(`echo '${result.stdOut}'`)
@@ -194,16 +194,10 @@ export default function JOSMValidationConverter() {
             />
             <InputRightElement h='26px' mr={-1.5}>
               <Tooltip
-                label={
-                  <Text color='whiteAlpha.800' fontSize='xs'>
-                    Supported file extension: csv.
-                  </Text>
-                }
-                bg='#404040'
+                label={<Text fontSize='xs'>Supported file extension: csv.</Text>}
                 placement='right'
                 gutter={12}
                 closeOnClick={false}
-                hasArrow
               >
                 <Box>
                   <Icon as={FaInfoCircle} />
@@ -229,18 +223,16 @@ export default function JOSMValidationConverter() {
       <Flex p={4} alignItems='center' justifyContent='center'>
         <Tooltip
           label={
-            <Text color='whiteAlpha.800' fontSize='xs'>
+            <Text fontSize='xs'>
               {inputPath ? '' : 'Please select an XML file.'}
               {inputPath ? '' : <br />}
               {inputPath && !saveFileName ? 'Save As filename cannot be empty.' : ''}
               {inputPath && !saveFileName ? <br /> : ''}
             </Text>
           }
-          bg='#404040'
           placement='top'
           gutter={12}
           closeOnClick={false}
-          hasArrow
           isDisabled={inputPath && saveFileName}
         >
           <Box w='223px'>

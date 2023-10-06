@@ -96,8 +96,8 @@ export const getLocalCommandList = async () => {
     // and put them into a dev-only folder (will be created if not exists), then return the command list mimicking the
     // released version, so in the component there's no need to create different procedure for whether it's local dev or release
     const devDir = `${getBasePath()}/commands/dev-only`
-    await os.execCommand(`rm -r ${devDir}`)
-    await os.execCommand(`mkdir -p ${devDir}`)
+    await os.execCommand(`rm -r "${devDir}"`)
+    await os.execCommand(`mkdir -p "${devDir}"`)
 
     const info = await getOSInfo()
     const dirs = (await filesystem.readDirectory(`${getBasePath()}/commands`))
