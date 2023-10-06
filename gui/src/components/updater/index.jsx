@@ -71,7 +71,7 @@ export default function Updater() {
     try {
       setUpdateInProgress(true)
       if (channel === 'dev') {
-        await os.spawnProcess(`echo 🤖 checking update on dev channel...`)
+        await os.spawnProcess(`echo "► checking update on dev channel..."`)
       }
       const url = `https://static.mogita.com/osmflux/releases/${channel}/latest/update_manifest.json?ts=${+new Date()}`
       const manifest = await updater.checkForUpdates(url)
@@ -88,7 +88,7 @@ export default function Updater() {
       if (manifest.version != NL_APPVERSION) {
         const choice = await os.showMessageBox(
           'OsmFlux',
-          `A newer version ${manifest.version} is available, you have ${NL_APPVERSION}.\n\nWould you like to restart OsmFlux and update now?`,
+          `A newer version ${manifest.version} is available, you have ${NL_APPVERSION}. Would you like to update and restart now?`,
           'YES_NO',
           'INFO',
         )
