@@ -12,6 +12,7 @@ import {
   FormLabel,
   Select,
   Text,
+  useColorModeValue,
 } from '@chakra-ui/react'
 import { RxActivityLog } from 'react-icons/rx'
 import Activity from '../activity'
@@ -45,11 +46,14 @@ export default function TopBar() {
     setShowActivity(true)
   }
 
+  const bgColor = useColorModeValue('#E6E6E6', '#303030')
+  const borderColor = useColorModeValue('#d8d8d8', '#4d4d4d')
+
   return (
-    <Flex h='100px' px={3} pt={2} bg='#303030'>
+    <Flex h='100px' px={3} pt={2} bg={bgColor}>
       <Flex direction='column' flexGrow={1} maxW='600px'>
         <FormControl>
-          <Flex alignItems='center' border='1px solid #4d4d4d' borderRadius={5}>
+          <Flex alignItems='center' border='1px solid #4d4d4d' borderColor={borderColor} borderRadius={5}>
             <FormLabel m={0} mb={1}>
               <Text fontSize='sm' fontWeight='bold' display='inline' mx={3}>
                 Recipes

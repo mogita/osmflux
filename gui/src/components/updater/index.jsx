@@ -88,7 +88,7 @@ export default function Updater() {
       if (manifest.version != NL_APPVERSION) {
         const choice = await os.showMessageBox(
           'OsmFlux',
-          `A newer version ${manifest.version} is available, you have ${NL_APPVERSION}.\n\nWould you like to restart OsmFlux and update now?`,
+          `A newer version ${manifest.version} is available, you have ${NL_APPVERSION}. Would you like to update and restart now?`,
           'YES_NO',
           'INFO',
         )
