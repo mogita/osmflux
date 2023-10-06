@@ -97,8 +97,8 @@ export default function OsmTagFilter() {
       await convertMapFile(pbfPath, inputIntermediate)
 
       const cmd = await getCommandPath('osmfilter')
-      const fullCmd = `"${cmd}" ${inputIntermediate} ${tags} ${outO5m ? '--out-o5m' : ''} -o=${output}`
-      await os.spawnProcess(`echo '🤖 ${fullCmd}'`)
+      const fullCmd = `"${cmd}" "${inputIntermediate}" ${tags} ${outO5m ? '--out-o5m' : ''} -o="${output}"`
+      await os.spawnProcess(`echo "► ${fullCmd}"`)
       const result = await os.execCommand(fullCmd)
       if (result.stdOut) {
         await os.spawnProcess(`echo '${result.stdOut}'`)
@@ -133,8 +133,8 @@ export default function OsmTagFilter() {
   const convertMapFile = async (input, output) => {
     try {
       const cmd = await getCommandPath('osmconvert')
-      const fullCmd = `"${cmd}" ${input} -o=${output}`
-      await os.spawnProcess(`echo "🤖 ${fullCmd}"`)
+      const fullCmd = `"${cmd}" "${input}" -o="${output}"`
+      await os.spawnProcess(`echo "► ${fullCmd}"`)
       const result = await os.execCommand(fullCmd)
       if (result.stdOut) {
         await os.spawnProcess(`echo "${result.stdOut}"`)
@@ -253,7 +253,7 @@ export default function OsmTagFilter() {
 
           <Tooltip
             label={
-              <Text color='whiteAlpha.800' fontSize='xs'>
+              <Text fontSize='xs'>
                 The elements that have the selected tags will be kept in the output PBF, others to be dropped.
                 Dependencies will be kept.
                 <br />
@@ -262,11 +262,9 @@ export default function OsmTagFilter() {
                 planned. UI changes might take place in the future.
               </Text>
             }
-            bg='#404040'
             placement='right'
             gutter={12}
             closeOnClick={false}
-            hasArrow
           >
             <Box>
               <Icon as={FaInfoCircle} />
@@ -323,18 +321,16 @@ export default function OsmTagFilter() {
             <InputRightElement h='26px' mr={-1.5}>
               <Tooltip
                 label={
-                  <Text color='whiteAlpha.800' fontSize='xs'>
+                  <Text fontSize='xs'>
                     Supported file extensions: pbf, osm, o5m.
                     <br />
                     <br />
                     Simply set a wanted file extension, OsmFlux will output to this format automatically.
                   </Text>
                 }
-                bg='#404040'
                 placement='right'
                 gutter={12}
                 closeOnClick={false}
-                hasArrow
               >
                 <Box>
                   <Icon as={FaInfoCircle} />
@@ -360,7 +356,7 @@ export default function OsmTagFilter() {
       <Flex p={4} alignItems='center' justifyContent='center'>
         <Tooltip
           label={
-            <Text color='whiteAlpha.800' fontSize='xs'>
+            <Text fontSize='xs'>
               {pbfPath ? '' : 'Please select a PBF file.'}
               {pbfPath ? '' : <br />}
               {pbfPath && !saveFileName ? 'Save As filename cannot be empty.' : ''}
@@ -368,14 +364,12 @@ export default function OsmTagFilter() {
               {tagsToKeep.length ? '' : 'Please select at least one tag to continue.'}
             </Text>
           }
-          bg='#404040'
           placement='top'
           gutter={12}
           closeOnClick={false}
-          hasArrow
           isDisabled={pbfPath && tagsToKeep.length && saveFileName}
         >
-          <Box minW='30%'>
+          <Box minW='223px'>
             <Button
               leftIcon={<BsFillPlayCircleFill />}
               colorScheme='telegram'

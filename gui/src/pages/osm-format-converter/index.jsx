@@ -142,8 +142,8 @@ export default function OsmFormatConverter() {
   const convert = async (from, to, fromFilePath, toFilePath) => {
     try {
       const cmd = await getCommandPath('osmosis')
-      const fullCmd = `"${cmd}" --read-${from} ${fromFilePath} --write-${to} ${toFilePath}`
-      await os.spawnProcess(`echo "🤖 ${fullCmd}"`)
+      const fullCmd = `"${cmd}" --read-${from} "${fromFilePath}" --write-${to} "${toFilePath}"`
+      await os.spawnProcess(`echo "► ${fullCmd}"`)
       const result = await os.execCommand(fullCmd)
       if (result.stdOut) {
         await os.spawnProcess(`echo "${result.stdOut}"`)
@@ -261,18 +261,16 @@ export default function OsmFormatConverter() {
             <InputRightElement h='26px' mr={-1.5}>
               <Tooltip
                 label={
-                  <Text color='whiteAlpha.800' fontSize='xs'>
+                  <Text fontSize='xs'>
                     Supported file extensions: pbf, osm.
                     <br />
                     <br />
                     Simply set a wanted file extension, OsmFlux will output to this format automatically.
                   </Text>
                 }
-                bg='#404040'
                 placement='right'
                 gutter={12}
                 closeOnClick={false}
-                hasArrow
               >
                 <Box>
                   <Icon as={FaInfoCircle} />
@@ -335,7 +333,7 @@ export default function OsmFormatConverter() {
       <Flex p={4} alignItems='center' justifyContent='center'>
         <Tooltip
           label={
-            <Text color='whiteAlpha.800' fontSize='xs'>
+            <Text fontSize='xs'>
               {inputPath ? '' : 'Please select an OSM map file.'}
               {inputPath ? '' : <br />}
               {inputPath && !saveFileName ? 'Save As filename cannot be empty.' : ''}
@@ -344,11 +342,9 @@ export default function OsmFormatConverter() {
               {!javaVMReady ? <br /> : ''}
             </Text>
           }
-          bg='#404040'
           placement='top'
           gutter={12}
           closeOnClick={false}
-          hasArrow
           isDisabled={inputPath && saveFileName}
         >
           <Box w='223px'>

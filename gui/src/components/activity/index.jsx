@@ -1,5 +1,5 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { Box, Button, Checkbox, Heading, Text } from '@chakra-ui/react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
+import { Box, Button, Checkbox, Heading, Text, useColorModeValue } from '@chakra-ui/react'
 import { BsFillTrash3Fill } from 'react-icons/bs'
 
 export default function Activity({ outputs, setOutputs, stickToBottom, setStickToBottom }) {
@@ -17,9 +17,12 @@ export default function Activity({ outputs, setOutputs, stickToBottom, setStickT
 
   useEffect(scrollToBottom, [stickToBottom])
 
+  const headerBgColor = useColorModeValue('#D6D6D6', '#40403f')
+  const logBgColor = useColorModeValue('#F5F5F5', '#1e1e1e')
+
   return (
     <Box w='100%' h='100%' overflow='hidden' display='flex' flexDirection='column'>
-      <Box h='40px' px={2} display='flex' alignItems='center' justifyContent='space-between' bg='#40403f'>
+      <Box h='40px' px={2} display='flex' alignItems='center' justifyContent='space-between' bg={headerBgColor}>
         <Box fontWeight='bold' flexGrow={1}>
           <Box display='flex' alignItems='center'>
             <Heading size='sm' mr={2}>
@@ -42,11 +45,12 @@ export default function Activity({ outputs, setOutputs, stickToBottom, setStickT
         </Box>
       </Box>
 
-      <Box w='100%' h='100%' p={2} fontSize={14} bg='#1e1e1e' overflow='scroll'>
+      <Box w='100%' h='100%' p={2} fontSize={14} bg={logBgColor} overflow='scroll'>
         {outputs.map((row, idx) => (
           <pre key={idx}>
             <pre
               style={{
+                fontSize: '12px',
                 whiteSpace: 'pre-wrap',
                 wordBreak: 'break-all',
                 userSelect: 'text',
