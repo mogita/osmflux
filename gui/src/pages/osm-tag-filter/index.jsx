@@ -12,11 +12,11 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Stack,
   Tag,
   TagLabel,
   Text,
   Tooltip,
+  Wrap,
 } from '@chakra-ui/react'
 import { BsFillPlayCircleFill } from 'react-icons/bs'
 import { FaInfoCircle } from 'react-icons/fa'
@@ -273,7 +273,7 @@ export default function OsmTagFilter() {
         </Flex>
 
         <CheckboxGroup onChange={setTagsToKeep}>
-          <Stack direction='row' spacing={7}>
+          <Wrap direction='row' spacing={7}>
             <Checkbox value='way::highway=' size='sm'>
               <Tag variant='outline' size='sm' colorScheme='cyan' mr={2}>
                 <TagLabel>Way</TagLabel>
@@ -292,13 +292,19 @@ export default function OsmTagFilter() {
               </Tag>
               Barrier
             </Checkbox>
+            <Checkbox value='node::highway=speed_camera' size='sm'>
+              <Tag variant='outline' size='sm' colorScheme='green' mr={2}>
+                <TagLabel>Node</TagLabel>
+              </Tag>
+              Highway = Speed Camera
+            </Checkbox>
             <Checkbox value='relation::type=restriction' size='sm'>
               <Tag variant='outline' size='sm' colorScheme='purple' mr={2}>
                 <TagLabel>Relation</TagLabel>
               </Tag>
               Type = Restriction
             </Checkbox>
-          </Stack>
+          </Wrap>
         </CheckboxGroup>
       </Flex>
 
