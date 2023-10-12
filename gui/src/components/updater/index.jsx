@@ -101,7 +101,7 @@ export default function Updater() {
       }
     } catch (err) {
       console.error(err)
-      os.showMessageBox('OsmFlux', 'Update failed:\n\n' + err.toString(), 'OK', 'ERROR')
+      os.showMessageBox('OsmFlux', 'Update failed: ' + err.message || err.toString(), 'OK', 'ERROR')
     } finally {
       setUpdateInProgress(false)
     }
