@@ -1,8 +1,10 @@
 # OsmFlux
 
+**Moved to https://github.com/mogita/osmflux**
+
 OsmFlux provides a graphical interface for a curated range of OSM tools to help working on the map data, format conversion, calculations and more.
 
-> Currently at pre-alpha stage, things might not be thoroughly tested. In case you spot any broken part please [file an issue](https://gitlab.com/mogita/osmflux/-/issues/new), thank you.
+> Currently at pre-alpha stage, things might not be thoroughly tested. In case you spot any broken part please [file an issue](https://github.com/mogita/osmflux/issues/new), thank you.
 
 # Downloads
 
@@ -10,12 +12,12 @@ OsmFlux provides a graphical interface for a curated range of OSM tools to help 
   - Linux (unzip and run the `osmflux` binary)
     - [Linux x64](https://static.mogita.com/osmflux/releases/stable/latest/osmflux-linux-x64.zip)
     - [Linux arm64](https://static.mogita.com/osmflux/releases/stable/latest/osmflux-linux-arm64.zip)
-  - macOS (currently not signed, you might need to allow it from Gatekeeper, [here's how](macOS-how-to.md))
+  - macOS (not signed, you might need to allow it from Gatekeeper, [here's how](macOS-how-to.md))
     - [macOS x64](https://static.mogita.com/osmflux/releases/stable/latest/osmflux-darwin-x64.app.zip)
     - [macOS arm64](https://static.mogita.com/osmflux/releases/stable/latest/osmflux-darwin-arm64.app.zip)
   - Windows
     - [Windows x64](https://static.mogita.com/osmflux/releases/stable/latest/osmflux-windows-x64.zip)
-- [All releases](https://gitlab.com/mogita/osmflux/-/releases)
+- [All releases](https://github.com/mogita/osmflux/releases)
 
 # Screenshot
 
@@ -74,7 +76,7 @@ yarn release
 
 This project contains pre-compiled binaries from the following projects:
 
-- [glancet](https://gitlab.com/mogita/glancet)
+- [glancet](https://github.com/mogita/glancet)
 - [osmctools](https://gitlab.com/osm-c-tools/osmctools)
 - [osmosis](https://github.com/openstreetmap/osmosis)
 
